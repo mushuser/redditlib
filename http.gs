@@ -1,29 +1,4 @@
 //
-function get_kind(api_path) {
-  var occurrences = (api_path.match(/\//g) || []).length
-  if(occurrences < 8) {
-    return "t3"
-  }else if(occurrences >= 8) {
-    return "t1"
-  }
-  
-  return undefined
-}
-
-function get_kind_children(json, kind) {
-  var child1 = json[0].data.children[0]
-  var child2 = json[1].data.children[0]
-  
-  if(child1.kind == kind) {
-    return child1
-  } else if(child2.kind == kind) {
-    return child2
-  }
-  
-  return undefined
-}
-
-//
 function rddt_http(api_path, payload) {
   var options;
   
@@ -72,12 +47,7 @@ function rddt_http(api_path, payload) {
     
     var text = response.getContentText()
     var json = JSON.parse(text)     
-    
-//    var len = json.length
-//    var kind = get_kind(api_path)
-//    Logger.log(json)
-//    var children = get_kind_children(json, kind)
-        
+            
     return json
   }
 }  
