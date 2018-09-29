@@ -26,6 +26,7 @@ function batch_del_old_comments() {
       unsave_thing(name)
     }
   }
+  
   return 
 }
 

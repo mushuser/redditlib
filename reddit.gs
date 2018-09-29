@@ -196,6 +196,13 @@ function get_saved(kind) {
   return objs  
 }
 
+//
+function get_parent(name) {
+  var id = name.match(/t\d_(\w*)/)[1]
+  var data = get_info(id).data
+  
+  return data
+}
 
 //
 function get_objects(reads, kind) {
@@ -204,10 +211,6 @@ function get_objects(reads, kind) {
   for(var i in reads) {
     var data = reads[i].data
     var kind_read = reads[i].kind    
-    /*
-    if((kind_read != kind) && (kind != undefined)) {
-      continue
-    }*/
     
     if(kind_read == "t1") {
       var parent_name = data.parent_id
@@ -219,8 +222,7 @@ function get_objects(reads, kind) {
       var title = get_escaped_title(data.title)
     }
     
-    var id = data.id
-    
+    var id = data.id    
     var name = data.name
     var subreddit = data.subreddit
     var permalink = data.permalink
@@ -232,8 +234,8 @@ function get_objects(reads, kind) {
       (name==undefined) ||
       (permalink==undefined)
       ) {
-        var msg = Utilities.formatString("id:%s,flair:%s,name:%s,permalink:%s,title:%s",id,flair,name,permalink,title)
-        Logger.log(msg)
+        Logger.log("title="+title+",flair="+flair+",id="+id+",name="+name+",permalink="+permalink)
+//        var msg = Utilities.formatString("id:%s,flair:%s,name:%s,permalink:%s,title:%s",id,flair,name,permalink,title)
         continue
       }    
     
