@@ -7,6 +7,7 @@ var api = {
   compose: "https://oauth.reddit.com/api/compose.json",
   vote: "https://oauth.reddit.com/api/vote.json",
   editusertext: "https://oauth.reddit.com/api/editusertext.json",
+  info_f: function(name){return "https://www.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
   upvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/upvoted.json?limit=100"},
@@ -34,38 +35,44 @@ function isListing(url) {
   return /\?limit=/.test(url)  
 }
 
+//
+function get_id_fr_line(line) {
+  var result;
+
+  if(line.indexOf("redd.it") > -1) {
+    var re = /redd\.it\/(\w*)/
+    var match = line.match(re)
+  } else if(line.indexOf(SUBREDDIT+"/comments") > -1){
+    var re = /\/([a-zA-Z0-9]{6,7})(?:\/|\))/g
+    var match;
+
+    while((match = re.exec(line)) != null) {
+      result = match[1]
+    }      
+  } else {
+    result = undefined
+  }
+  
+  return result
+}
 
 //
 function get_ids_fr_page(page) {
-  var ids = []
-  var match = undefined;
-  var re1 = /[0-9a-zA-Z]{6,}/g;
-  var re2 = /(\/r\/.*)\)|\(.*\.it\/(.*)\)/
-  
-  var includes = ["redd.it", "r/"+SUBREDDIT+"/comments"]
-  
-  var objs = []
-  
+  var ids = [] 
   var lines = page.split("\n")
-  lines = lines.filter(function(e) {
-    return (e.indexOf(includes[0]) > -1) || (e.indexOf(includes[1]) > -1)
-  })
   
   for(var i in lines) {
-    var obj = {
-      id:"",
-      link:""
+    var r = get_id_fr_line(lines[i])
+    if(r) {
+      ids.push(r)
     }
-    var match1 = lines[i].match(re1)
-    obj.id = match1[match1.length-1]
-   
-    var match2 = lines[i].match(re2)
-    obj.link = (match2[1] || match2[2])
-    
-    objs.push(obj)
   }
+  
+  ids = ids.filter(function(item, pos) {
+    return ids.indexOf(item) == pos;
+  })
 
-  return objs
+  return ids
 }
 
 //
@@ -82,23 +89,6 @@ function get_page_obj(wiki_path, obj_path) {
 
   var r = rddt_read(api_path, obj_path)
   return r
-}
-
-//
-function get_comment(id, obj_path) {
-  if(id.indexOf(SUBREDDIT) > -1) {
-    var api_path = api.comments_link_f(id)
-  } else {
-    var api_path = api.comments_sr_f(SUBREDDIT, id)
-  }
-  
-  var json = rddt_read(api_path, obj_path)
-
-//  Logger.log(json)
-  var kind = get_kind(api_path)
-  var children = get_kind_children(json, kind)
-//  Logger.log(children)
-  return children
 }
 
 //
@@ -125,6 +115,52 @@ function get_updatedpage(current_page, title, permalink) {
   return new_page
 }
 
+var code = {
+  ADDPOST_ALREADY:1,
+  ADDPOST_NOT:2,
+  ADDPOST_ADDED:3
+}
+
+//
+function get_content_fr_info(info) {
+  var children = info.data.children[0]
+  var data = children.data
+  var kind = children.kind
+  var content;
+  
+  if(kind == "t1") {
+    content = data.body
+  } else if(kind == "t3") {
+    content = data.selftext 
+  }
+  
+  return content
+}
+
+//
+function get_link(id) {
+  var json = get_info(id)
+  var data = json.data
+  var link = data.permalink
+  
+  return link
+}
+
+//
+function get_info(id) {
+  
+  if(id.length == 6) {
+    var name = "t3_"+id
+  } else if(id.length == 7) {
+    var name = "t1_"+id    
+  }
+  var api_path = api.info_f(name)
+
+  var read = rddt_read(api_path)
+  
+  return read.data.children[0]
+}
+
 //
 function add_goodpost(saved) {
   var current_page = get_page(saved.catalog)
@@ -132,12 +168,13 @@ function add_goodpost(saved) {
 
   if(isinpage) {
     unsave_thing(saved.name)
-    return true
+    return code.ADDPOST_ALREADY
   }
-  
+ 
   var body = get_escaped_body(current_page)
   var title = get_escaped_title(saved.title)
-  var new_page = get_updatedpage(body, title, saved.permalink)      
+  var link = get_link(saved.id)
+  var new_page = get_updatedpage(body, title, link)      
   
   update_wiki(saved.catalog, new_page)
   
@@ -145,9 +182,9 @@ function add_goodpost(saved) {
   var isinpage = check_idinpage(updated_page, saved.id)
   if(isinpage) {
     unsave_thing(saved.name)
-    return true
+    return code.ADDPOST_ADDED
   } else {
-    return false
+    return code.ADDPOST_NOT
   }
 }
 
@@ -157,13 +194,6 @@ function get_saved(kind) {
   var objs = get_objects(reads,kind)
 
   return objs  
-}
-
-//
-function get_parent(name) {
-  var id = name.match(/t\d_(\w*)/)[1]
-  var data = get_comment(id).data
-  return data
 }
 
 
@@ -254,10 +284,10 @@ function unsave_thing(name) {
 
 //
 function check_idinpage(page, id) {
-  var objs = get_ids_fr_page(page)
+  var ids = get_ids_fr_page(page)
 
-  for(var i in objs) {
-    if(objs[i].id == id) {
+  for(var i in ids) {
+    if(ids[i] == id) {
       return true  
     }
   }

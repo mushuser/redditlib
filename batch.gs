@@ -37,14 +37,12 @@ function batch_save_comments_gd() {
   var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
-    var objs = get_ids_fr_page(page)
-    
-    for(var i2 in objs) {
-      var obj = objs[i2]
-      Logger.log(obj)
-      if(ids_gd.indexOf(obj.id) < 0) {
-        Logger.log("page:"+wikis[i])
-        save_json_gd(obj.link)
+    var ids = get_ids_fr_page(page)
+    Logger.log("wiki:"+wikis[i])
+    Logger.log("ids:"+ids)
+    for(var i2 in ids) {
+      if(ids_gd.indexOf(ids[i2]) < 0) {
+        save_json_gd(ids[i2])
       }
     }
   }
@@ -58,18 +56,26 @@ function batch_add_goodposts() {
     var s = saveds[i]
     
     s.catalog = get_wikicatalog(s.flair)
-    var msg = Utilities.formatString(":%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
-    
-    if(s.catalog == undefined) {
-      Logger.log("no flair"+msg)    
+    if(
+      (s.catalog == undefined) ||
+      (s.title == undefined) ||
+      (s.flair == undefined) ||
+      (s.name == undefined) ) {
+      throw "catalog or title or flair or name"          
     }
-    
+      
+    var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
+    Logger.log("add good post:" + msg)
     var r = add_goodpost(s)
     
-    if(r) {
-      Logger.log("added" + msg)
+    if(r == code.ADDPOST_ADDED) {
+      Logger.log("added:" + s.name)
+    } else if(r == code.ADDPOST_NOT) {
+      Logger.log("not added:" + s.name)
+    } else if(r == code.ADDPOST_ALREADY) {
+      Logger.log("already added:" + s.name)
     } else {
-      Logger.log("not added" + msg)
+      Logger.log("unknown error") 
     }
   }
 }

@@ -1,10 +1,10 @@
 //
 function save_json_gd(id) {
-  var json = get_comment(id)
-  var data = json.data
-  var text = JSON.stringify(json)
+  var children = get_info(id)
+  var text = JSON.stringify(children)
+  var data = children.data
   var name = data.name
-  var kind_read = json.kind
+  var kind_read = children.kind
   
   if(kind_read == "t1") {
     var parent_name = data.parent_id
@@ -15,11 +15,8 @@ function save_json_gd(id) {
     var flair = data.link_flair_text // t3 only
     var title = get_escaped_title(data.title)
   }  
-
-  Logger.log("name:"+name+",flair:"+flair+",title:"+title)
  
   var fileName = Utilities.formatString("[%s]%s_%s.json", flair, title, name)
-//  Logger.log("fileName:"+fileName)
   
   var file = DriveApp.createFile(fileName,text)
   if(file) {
@@ -58,24 +55,12 @@ function clean_folders_gd(file) {
   }
 }
 
-// XXX
-function save_comments_gd(wiki) {
-  var page = get_page(wiki)
-  var objs = get_ids_fr_page(page)
-  var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
-
-  for(var i in objs) {
-    if(ids_gd.indexOf(ids_page[i]) < 0) { 
-      save_json_gd(objs[i].link)
-    }
-  }  
-}
-
 //
 function get_ids_fr_gd(folder_id) {
   var folder = DriveApp.getFolderById(folder_id)
   var files = folder.getFiles()
   var ids = []
+  
   while (files.hasNext()) {
     var file = files.next();
     var filename = file.getName()
@@ -87,6 +72,10 @@ function get_ids_fr_gd(folder_id) {
       }        
     }    
   }
+  
+  ids = ids.filter(function(item, pos) {
+    return ids.indexOf(item) == pos;
+  })
   
   return ids
 }
