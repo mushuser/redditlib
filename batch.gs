@@ -31,11 +31,13 @@ function batch_del_old_comments() {
 }
 
 //
-function batch_save_comments_gd() {
+function batch_save_comments_gd(wikis) {
   var api_path = api.pages_f(SUBREDDIT)
-  var wikis = rddt_read(api_path, "/data")
-  
+  if(wikis == undefined) {
+    var wikis = rddt_read(api_path, "/data")
+  }
   var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
+  
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
     var ids = get_ids_fr_page(page)

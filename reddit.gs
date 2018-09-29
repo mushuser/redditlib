@@ -42,6 +42,7 @@ function get_id_fr_line(line) {
   if(line.indexOf("redd.it") > -1) {
     var re = /redd\.it\/(\w*)/
     var match = line.match(re)
+    result = match[1]
   } else if(line.indexOf(SUBREDDIT+"/comments") > -1){
     var re = /\/([a-zA-Z0-9]{6,7})(?:\/|\))/g
     var match;
