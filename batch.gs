@@ -2,20 +2,19 @@
 function batch_del_old_comments() {
   var api_path = api.comments_user_f(credential.username)
   var reads = rddt_read(api_path)
-  var now = (new Date()).getTime()
+
   
   for(var i in reads) {
     var data = reads[i].data
-    var created = data.created_utc * 1000
-    var days = (now - created) / 86400000
-    var days_round = Math.round(days)
+    var age = get_age(data.created_utc)
+    var days_round = Math.round(age)
     var saved = data.saved
     var name = data.name
     var body = data.body.slice(0, 15)
     
     var msg = Utilities.formatString(":%s, %s, %s, %s", name, days_round, saved, body)
     
-    if((days >= MIN_AGE) && (days < MAX_AGE) && (saved == false)) {
+    if((age >= MIN_AGE) && (age < MAX_AGE) && (saved == false)) {
       Logger.log("del"+msg)
       save_json_gd(data.id)
       del_thing(name)
@@ -23,7 +22,7 @@ function batch_del_old_comments() {
       Logger.log("not del"+msg)
     }
     
-    if((days >= MAX_AGE) && (saved == true)) {
+    if((age >= MAX_AGE) && (saved == true)) {
       unsave_thing(name)
     }
   }
@@ -53,6 +52,22 @@ function batch_save_comments_gd(wikis) {
 }
 
 //
+function batch_clean_voted() {
+  var objs = get_upvoted()
+  
+  for(var i in objs) {
+    var obj = objs[i]
+    
+    // six months
+    if(obj.age > 180) {
+      continue  
+    }
+    var name = obj.name
+    clean_vote(name)
+  }
+}
+
+//
 function batch_add_goodposts() {
   var saveds = get_saved()
 
@@ -74,6 +89,7 @@ function batch_add_goodposts() {
     
     if(r == code.ADDPOST_ADDED) {
       Logger.log("added:" + s.name)
+      up_vote(s.name)
     } else if(r == code.ADDPOST_NOT) {
       Logger.log("not added:" + s.name)
     } else if(r == code.ADDPOST_ALREADY) {
