@@ -119,7 +119,8 @@ function get_updatedpage(current_page, title, permalink) {
 var code = {
   ADDPOST_ALREADY:1,
   ADDPOST_NOT:2,
-  ADDPOST_ADDED:3
+  ADDPOST_ADDED:3,
+  ADDPOST_EMPTY:4
 }
 
 //
@@ -165,6 +166,11 @@ function get_info(id) {
 //
 function add_goodpost(saved) {
   var current_page = get_page(saved.catalog)
+  
+  if(current_page.length < 2) {
+    return code.ADDPOST_EMPTY
+  }
+  
   var isinpage = check_idinpage(current_page, saved.id)
 
   if(isinpage) {

@@ -77,8 +77,8 @@ function batch_add_goodposts() {
       Logger.log("not added:" + s.name)
     } else if(r == code.ADDPOST_ALREADY) {
       Logger.log("already added:" + s.name)
-    } else {
-      Logger.log("unknown error") 
+    } else if(r == code.ADDPOST_EMPTY) {
+      Logger.log("empty page:") 
     }
   }
 }
