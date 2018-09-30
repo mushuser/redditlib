@@ -349,7 +349,7 @@ function editusertext(id, text) {
   var reads = rddt_read(api_path, undefined, payload)    
 }
 
-//
+// only get t3 things
 function get_upvoted() {
   var reads = get_upvoted_children()
   var objs = get_objects(reads, false)

@@ -60,13 +60,13 @@ function batch_save_comments_gd(wikis) {
 //
 function batch_clean_voted() {
   var objs = get_upvoted()
-  
   for(var i in objs) {
     var obj = objs[i]
+    console.info(obj)
     
     // six months
     if(obj.age > ARCHIVED_AGE) {
-      continue  
+      break  
     }
     var name = obj.name
     clean_vote(name)
@@ -98,8 +98,10 @@ function batch_add_goodposts() {
       up_vote(s.name)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
+      down_vote(s.name)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
+      up_vote(s.name)
     } else if(r == code.ADDPOST_EMPTY) {
       console.info("empty page") 
     }
