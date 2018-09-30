@@ -7,7 +7,7 @@ var api = {
   compose: "https://oauth.reddit.com/api/compose.json",
   vote: "https://oauth.reddit.com/api/vote.json",
   editusertext: "https://oauth.reddit.com/api/editusertext.json",
-  info_f: function(name){return "https://www.reddit.com/api/info.json?id="+name},
+  info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
   upvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/upvoted.json?limit=100"},
@@ -341,4 +341,29 @@ function editusertext(id, text) {
     "thing_id":id
   }
   var reads = rddt_read(api_path, undefined, payload)    
+}
+
+//
+function up_vote(id) {
+  vote_thing(id, "1")  
+}
+
+//
+function down_vote(id) {
+  vote_thing(id, "-1")  
+}
+
+//
+function clean_vote(id) {
+  vote_thing(id, "0")  
+}
+
+function vote_thing(id, dir) {
+  var api_path = api.vote  
+  var payload = {
+    "id":id,
+    "dir":dir.toString(),
+  }
+  var reads = rddt_read(api_path, undefined, payload)    
+  Logger.log(reads)
 }

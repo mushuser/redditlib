@@ -1,6 +1,7 @@
 //
 function rddt_http(api_path, payload) {
   var options;
+  var mute = false
   
   if( isOauth(api_path) ) {
     var headers = {
@@ -9,7 +10,12 @@ function rddt_http(api_path, payload) {
     
     options = {
       "headers":headers,
-      "payload":payload
+      "payload":payload,
+      "muteHttpExceptions":mute
+    }    
+  } else {
+    options = {
+      "muteHttpExceptions":mute
     }    
   }
   
