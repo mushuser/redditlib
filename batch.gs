@@ -98,7 +98,7 @@ function batch_add_goodposts() {
       up_vote(s.name)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
-      down_vote(s.name)
+      clean_vote(s.name)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
       up_vote(s.name)
