@@ -111,7 +111,7 @@ function get_saved_children() {
 
 //
 function get_updatedpage(current_page, title, permalink) {
-  var new_page = Utilities.formatString("%s\n  * [%s](%s)", current_page, title, permalink)
+  var new_page = Utilities.formatString("%s\n  1. [%s](%s)", current_page, title, permalink)
   
   return new_page
 }
