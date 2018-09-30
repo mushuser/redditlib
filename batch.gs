@@ -17,12 +17,13 @@ function batch_del_old_comments() {
     
     if((days >= MIN_AGE) && (days < MAX_AGE) && (saved == false)) {
       Logger.log("del"+msg)
+      save_json_gd(data.id)
       del_thing(name)
     } else {
       Logger.log("not del"+msg)
     }
     
-    if((days > MAX_AGE) && (saved == true)) {
+    if((days >= MAX_AGE) && (saved == true)) {
       unsave_thing(name)
     }
   }

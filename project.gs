@@ -1,7 +1,7 @@
 var httpretries = 3
 
 var MIN_AGE = 3
-var MAX_AGE = 5
+var MAX_AGE = 4
 
 var credential = {
   username:"",
