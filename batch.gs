@@ -17,8 +17,14 @@ function batch_del_old_comments() {
       Logger.log("del"+msg)
       save_json_gd(data.id)
       del_thing(name)
+      continue
     } else {
       Logger.log("not del"+msg)
+    }
+    
+    // don't handle old comments
+    if(age > MAX_AGE) {
+      break
     }
   }
   

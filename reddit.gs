@@ -156,7 +156,7 @@ function get_link(id) {
   return link
 }
 
-//
+// input id
 function get_info(id) {
   
   if(id.length == 6) {
