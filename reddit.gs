@@ -15,7 +15,7 @@ var api = {
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
   comments_sr_f: function(sr, id){return "https://www.reddit.com/r/"+sr+"/comments/"+id+".json"},
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
-  comments_user_f: function(user){return "https://www.reddit.com/user/"+user+"/comments/.json?limit=100"}
+  comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
 
 //
