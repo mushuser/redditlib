@@ -11,15 +11,15 @@ function batch_del_old_comments() {
     var name = data.name
     var body = data.body.slice(0, 15)
     
-    var msg = Utilities.formatString(":%s, %s, %s, %s", name, days_round, likes, body)
+    var msg = Utilities.formatString("%s, %s, %s, %s", name, days_round, likes, body)
     
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
-      Logger.log("del"+msg)
+      console.info("del:%s",msg)
       save_json_gd(data.id)
       del_thing(name)
       continue
     } else {
-      Logger.log("not del"+msg)
+      console.info("not del:%s",msg)
     }
     
     // don't handle old comments
@@ -42,11 +42,16 @@ function batch_save_comments_gd(wikis) {
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
     var ids = get_ids_fr_page(page)
-    Logger.log("wiki:"+wikis[i])
-    Logger.log("ids:"+ids)
+    console.info("%s:%s",wikis[i],ids)
+    
     for(var i2 in ids) {
       if(ids_gd.indexOf(ids[i2]) < 0) {
-        save_json_gd(ids[i2])
+        var r = save_json_gd(ids[i2])
+        if(r) {
+          console.info("saved:%s", r)  
+        } else {
+          console.info("not saved:%s", ids[i2]) 
+        }
       }
     }
   }
@@ -85,18 +90,18 @@ function batch_add_goodposts() {
     }
       
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
-    Logger.log("add good post:" + msg)
+    
     var r = add_goodpost(s)
     
     if(r == code.ADDPOST_ADDED) {
-      Logger.log("added:" + s.name)
+      console.info("added:%s",msg)
       up_vote(s.name)
     } else if(r == code.ADDPOST_NOT) {
-      Logger.log("not added:" + s.name)
+      console.info("not added:%s",msg)
     } else if(r == code.ADDPOST_ALREADY) {
-      Logger.log("already added:" + s.name)
+      console.info("already added:%s",msg)
     } else if(r == code.ADDPOST_EMPTY) {
-      Logger.log("empty page:") 
+      console.info("empty page") 
     }
   }
 }

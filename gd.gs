@@ -22,11 +22,10 @@ function save_json_gd(id) {
   if(file) {
     var folder = DriveApp.getFolderById(GD_FOLDER_ID)
     folder.addFile(file)
-    clean_folders_gd(file)
-    
-    Logger.log("saved:"+fileName)
+    clean_folders_gd(file)    
+    return fileName
   } else {
-    Logger.log("not saved:"+name)  
+    return undefined
   }
 }
 
