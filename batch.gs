@@ -3,27 +3,22 @@ function batch_del_old_comments() {
   var api_path = api.comments_user_f(credential.username)
   var reads = rddt_read(api_path)
 
-  
   for(var i in reads) {
     var data = reads[i].data
+    var likes = data.likes // true, false, null
     var age = get_age(data.created_utc)
     var days_round = Math.round(age)
-    var saved = data.saved
     var name = data.name
     var body = data.body.slice(0, 15)
     
-    var msg = Utilities.formatString(":%s, %s, %s, %s", name, days_round, saved, body)
+    var msg = Utilities.formatString(":%s, %s, %s, %s", name, days_round, likes, body)
     
-    if((age >= MIN_AGE) && (age < MAX_AGE) && (saved == false)) {
+    if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
       Logger.log("del"+msg)
       save_json_gd(data.id)
       del_thing(name)
     } else {
       Logger.log("not del"+msg)
-    }
-    
-    if((age >= MAX_AGE) && (saved == true)) {
-      unsave_thing(name)
     }
   }
   
@@ -59,7 +54,7 @@ function batch_clean_voted() {
     var obj = objs[i]
     
     // six months
-    if(obj.age > 180) {
+    if(obj.age > ARCHIVED_AGE) {
       continue  
     }
     var name = obj.name
