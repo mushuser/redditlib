@@ -1,30 +1,37 @@
-//
+// return fileName or undefined
 function save_json_gd(id) {
-  var children = get_info(id)
-  var text = JSON.stringify(children)
-  var data = children.data
+  var name = get_name(id)
+  var parent = get_parent_comments(name)
+  var text = JSON.stringify(parent)
+  var data = parent[0].data.children[0].data
   var name = data.name
-  var kind_read = children.kind
+  var sr = data.subreddit
   
-  if(kind_read == "t1") {
-    var parent_name = data.parent_id
-    var parent = get_parent(parent_name)
-    var flair = parent.link_flair_text  
-    var title = get_escaped_title(parent.title + "(回覆)")
-  } else if(kind_read == "t3") {
-    var flair = data.link_flair_text // t3 only
-    var title = get_escaped_title(data.title)
-  }  
- 
+  // 
+  if(sr != SUBREDDIT) {
+    return undefined  
+  }
+  
+  var flair = data.link_flair_text
+  var title = get_escaped_title(data.title)
+
   var fileName = Utilities.formatString("[%s]%s_%s.json", flair, title, name)
+  var r = check_values(flair, title, name, fileName)
   
+  if(r == false) {
+    console.info("check_values() failed")
+    return undefined
+  }
+    
   var file = DriveApp.createFile(fileName,text)
   if(file) {
     var folder = DriveApp.getFolderById(GD_FOLDER_ID)
     folder.addFile(file)
     clean_folders_gd(file)    
+    console.info("saved:%s", fileName)
     return fileName
   } else {
+    console.info("not saved:%s", name)
     return undefined
   }
 }

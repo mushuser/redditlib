@@ -14,10 +14,16 @@ function batch_del_old_comments() {
     var msg = Utilities.formatString("%s, %s, %s, %s", name, days_round, likes, body)
     
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
-      console.info("del:%s",msg)
-      save_json_gd(data.id)
-      del_thing(name)
+      var r = save_json_gd(data.id)
+            
+      var rr = del_thing(name)      
+      if(rr) {
+        console.info("deleted:%s",msg)            
+      } else {
+        console.info("not deleted:%s",msg)            
+      }
       continue
+      
     } else {
       console.info("not del:%s",msg)
     }
@@ -42,16 +48,13 @@ function batch_save_comments_gd(wikis) {
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
     var ids = get_ids_fr_page(page)
+    if(ids.length < 1) {
+      continue  
+    }
     console.info("%s:%s",wikis[i],ids)
-    
     for(var i2 in ids) {
-      if(ids_gd.indexOf(ids[i2]) < 0) {
+      if(ids_gd.indexOf(ids[i2]) < 0) {      
         var r = save_json_gd(ids[i2])
-        if(r) {
-          console.info("saved:%s", r)  
-        } else {
-          console.info("not saved:%s", ids[i2]) 
-        }
       }
     }
   }
@@ -81,13 +84,7 @@ function batch_add_goodposts() {
     var s = saveds[i]
     
     s.catalog = get_wikicatalog(s.flair)
-    if(
-      (s.catalog == undefined) ||
-      (s.title == undefined) ||
-      (s.flair == undefined) ||
-      (s.name == undefined) ) {
-      throw "catalog or title or flair or name"          
-    }
+    check_values(s.catalog, s.title, s.flair, s.name)
       
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
     
@@ -95,13 +92,13 @@ function batch_add_goodposts() {
     
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
-      up_vote(s.name)
+      up_vote(s)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
-      clean_vote(s.name)
+      clean_vote(s)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
-      up_vote(s.name)
+      up_vote(s)
     } else if(r == code.ADDPOST_EMPTY) {
       console.info("empty page") 
     }

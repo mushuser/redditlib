@@ -132,6 +132,58 @@ var code = {
 }
 
 //
+function get_info(name) {
+  var api_path = api.info_f(name)
+  var read = rddt_read(api_path)
+
+  return read.data.children[0] //safe
+}
+
+
+function get_parent_link(permalink) {
+  var re = /\/([a-zA-Z0-9]*)/g
+  
+  var m = permalink.match(re)
+  var link = m.slice(0,4).join("")
+  
+  return link
+}
+
+//
+function get_parent(name) { 
+  var data = get_info(name).data
+  var link_id = data.link_id // name
+  
+  if(link_id) {
+    // child
+    var id = get_id(link_id)
+  } else {
+    // parent itself
+    var id = data.id
+  }
+  
+  var api_path = api.comments_sr_f(SUBREDDIT, id)
+  var reads = rddt_read(api_path)
+  
+  return reads
+}
+
+//parent's comment
+function get_parent_comments(name) {
+  var children = get_info(name)
+  var data = children.data  
+  var permalink = data.permalink
+  
+  var parent_link = get_parent_link(permalink)  
+  var api_path = api.comments_link_f(parent_link)
+
+  var read = rddt_read(api_path)  
+  
+  return read
+}
+
+
+//
 function get_content_fr_info(info) {
   var children = info.data.children[0]
   var data = children.data
@@ -149,26 +201,38 @@ function get_content_fr_info(info) {
 
 //
 function get_link(id) {
-  var json = get_info(id)
+  var name = get_name(id)
+  var json = get_info(name)
   var data = json.data
   var link = data.permalink
   
   return link
 }
 
-// input id
-function get_info(id) {
+//
+function get_id(name) {
+  var id = name.match(/t\d_(\w*)/)[1]
   
+  return id
+}
+  
+//
+function get_name(id) {
   if(id.length == 6) {
     var name = "t3_"+id
   } else if(id.length == 7) {
     var name = "t1_"+id    
   }
-  var api_path = api.info_f(name)
 
-  var read = rddt_read(api_path)
-  
-  return read.data.children[0]
+  return name  
+}
+
+// 
+function get_kind(name) {
+  var re = /(t\d)_\w*/
+  var match = name.match(re)[1]  
+
+  return match  
 }
 
 //
@@ -212,14 +276,6 @@ function get_saved() {
 }
 
 //
-function get_parent(name) {
-  var id = name.match(/t\d_(\w*)/)[1]
-  var data = get_info(id).data
-  
-  return data
-}
-
-//
 function get_objects(reads, ifvalidated) {
   var objs = []    
   
@@ -227,13 +283,15 @@ function get_objects(reads, ifvalidated) {
     var data = reads[i].data
     var kind_read = reads[i].kind
     var age = get_age(data.created_utc)
-       
-    if(kind_read == "t1") {
-      var parent_name = data.parent_id
+
+    var kind = get_kind(data.name)
+    
+    if(kind == "t1") {
+      var parent_name = data.parent_id // name
       var parent = get_parent(parent_name)
       var flair = parent.link_flair_text
-      var title = get_escaped_title(data.link_title + "(回覆)")
-    } else if(kind_read == "t3") {
+      var title = get_escaped_title(data.title + "(回覆)")
+    } else if(kind == "t3") {
       var flair = data.link_flair_text // t3 only
       var title = get_escaped_title(data.title)
     }
@@ -242,26 +300,14 @@ function get_objects(reads, ifvalidated) {
     var name = data.name
     var subreddit = data.subreddit
     var permalink = data.permalink
-
+    
     if(subreddit != SUBREDDIT) {
       continue  
     }
     
     if(ifvalidated) {
-      if( 
-        (title==undefined) || 
-        (flair==undefined) || 
-        (id==undefined) || 
-        (name==undefined) ||
-        (permalink==undefined)
-        ) {
-          Logger.log("title="+title+",flair="+flair+",id="+id+",name="+name+",permalink="+permalink)
-          //        var msg = Utilities.formatString("id:%s,flair:%s,name:%s,permalink:%s,title:%s",id,flair,name,permalink,title)
-          continue
-      }    
+      check_values(title, flair, age, id, name, permalink)
     }
-    
-
     
     var obj = {
       title:title,
@@ -330,14 +376,27 @@ function get_escaped_body(body) {
   return r
 }
 
+//
+function get_author(id) {
+  var data = get_info(id)
+  var author = data.author
+  
+  return author  
+}
 
 //
 function del_thing(id) {
+  var author = get_author(id)
+  if(author != credential.username) {
+    return false  
+  }
+     
   var api_path = api.del
   var payload = {
     "id":id
   }
-  var reads = rddt_read(api_path, undefined, payload)    
+  var reads = rddt_read(api_path, undefined, payload)
+  return true    
 }
 
 function editusertext(id, text) {
@@ -358,27 +417,31 @@ function get_upvoted() {
 }
 
 //
-function up_vote(name) {
-  vote_thing(name, "1")  
+function up_vote(obj) {
+  vote_thing(obj, "1")  
 }
 
 //
-function down_vote(name) {
-  vote_thing(name, "-1")  
+function down_vote(obj) {
+  vote_thing(obj, "-1")  
 }
 
 //
-function clean_vote(name) {
-  vote_thing(name, "0")  
+function clean_vote(obj) {
+  vote_thing(obj, "0")  
 }
 
 //
-function vote_thing(name, dir) {
+function vote_thing(obj, dir) {
+  if(obj.age > ARCHIVED_AGE) {
+    return false
+  }
+  
   var api_path = api.vote  
   var payload = {
-    "id":name,
+    "id":obj.name,
     "dir":dir
   }
   var reads = rddt_read(api_path, undefined, payload)    
-  Logger.log(reads)
+  return true //?
 }

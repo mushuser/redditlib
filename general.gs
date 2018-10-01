@@ -3,8 +3,27 @@ var ARCHIVED_AGE = 180 // six months in days
 var MIN_AGE = 3
 var MAX_AGE = 4
 
-
 var NOW = (new Date()).getTime()
+
+//
+function check_values(variables) {
+  var msg = ""
+  var valid = true
+  
+  for(var i in arguments) {
+    var arg = arguments[i]
+    msg = msg + "[" + i.toString() + "]" + "=" + arg + ", "
+    if(arg == undefined) {
+      valid = false
+    }
+  }
+  
+  if(valid == false) {
+    console.info(msg)
+  }
+  
+  return valid
+}
 
 //
 function deep_read(obj, path) {
