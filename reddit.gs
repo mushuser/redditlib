@@ -306,7 +306,10 @@ function get_objects(reads, ifvalidated) {
     }
     
     if(ifvalidated) {
-      check_values(title, flair, age, id, name, permalink)
+      var r = check_values(title, flair, age, id, name, permalink)
+      if(r == false) {
+        throw "check_values"  
+      }
     }
     
     var obj = {
@@ -377,23 +380,23 @@ function get_escaped_body(body) {
 }
 
 //
-function get_author(id) {
-  var data = get_info(id)
+function get_author(name) {
+  var data = get_info(name).data
   var author = data.author
   
   return author  
 }
 
 //
-function del_thing(id) {
-  var author = get_author(id)
+function del_thing(name) {
+  var author = get_author(name)
   if(author != credential.username) {
     return false  
   }
      
   var api_path = api.del
   var payload = {
-    "id":id
+    "id":name
   }
   var reads = rddt_read(api_path, undefined, payload)
   return true    

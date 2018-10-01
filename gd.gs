@@ -7,8 +7,8 @@ function save_json_gd(id) {
   var name = data.name
   var sr = data.subreddit
   
-  // 
   if(sr != SUBREDDIT) {
+    console.info("SR=%s", sr)
     return undefined  
   }
   
@@ -19,8 +19,7 @@ function save_json_gd(id) {
   var r = check_values(flair, title, name, fileName)
   
   if(r == false) {
-    console.info("check_values() failed")
-    return undefined
+    throw "check_values"
   }
     
   var file = DriveApp.createFile(fileName,text)

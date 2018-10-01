@@ -14,7 +14,7 @@ function batch_del_old_comments() {
     var msg = Utilities.formatString("%s, %s, %s, %s", name, days_round, likes, body)
     
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
-      var r = save_json_gd(data.id)
+      save_json_gd(data.id)
             
       var rr = del_thing(name)      
       if(rr) {
@@ -25,7 +25,7 @@ function batch_del_old_comments() {
       continue
       
     } else {
-      console.info("not del:%s",msg)
+      console.info("age invalid:%s",msg)
     }
     
     // don't handle old comments
@@ -84,8 +84,12 @@ function batch_add_goodposts() {
     var s = saveds[i]
     
     s.catalog = get_wikicatalog(s.flair)
-    check_values(s.catalog, s.title, s.flair, s.name)
-      
+    
+    var c = check_values(s.catalog, s.title, s.flair, s.name)
+    if(c == false) {
+      throw "check_values"  
+    }      
+    
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
     
     var r = add_goodpost(s)
