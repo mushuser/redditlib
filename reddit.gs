@@ -26,7 +26,7 @@ function get_wikis(mapping) {
   }
   values = get_unique(values)  
   
-  Logger.log(values)
+  return values
 }
 
 
