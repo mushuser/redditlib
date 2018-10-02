@@ -59,13 +59,6 @@ function rddt_http(api_path, payload) {
 }  
 
 //
-function rddt_read(api_path, obj_path, payload) {
-  var json = rddt_http(api_path, payload)
-  var result = deep_read(json, obj_path)
-  return result
-}
-
-//
 function get_bearer() {
   var basic_auth = get_basicauth(
     credential.client_id, 

@@ -78,7 +78,7 @@ function get_ids_fr_page(page) {
 
 //
 function get_page(wiki_path) {
-  return get_page_obj(wiki_path, "/data/content_md") 
+  return get_page_obj(wiki_path).data.content_md
 }
 
 //
@@ -88,14 +88,14 @@ function get_page_obj(wiki_path, obj_path) {
   }
   var api_path = api.wiki_page_f(SUBREDDIT, wiki_path)
 
-  var r = rddt_read(api_path, obj_path)
+  var r = rddt_http(api_path, obj_path)
   return r
 }
 
 //
 function get_upvoted_children() {
   var api_path = api.upvoted_f(credential.username)
-  var reads = rddt_read(api_path)
+  var reads = rddt_http(api_path)
 
   return reads
 }
@@ -111,7 +111,7 @@ function get_age(created) {
 //
 function get_saved_children() {
   var api_path = api.saved_f(credential.username)
-  var reads = rddt_read(api_path)
+  var reads = rddt_http(api_path)
 //  Logger.log(reads)
   return reads
 }
@@ -134,7 +134,7 @@ var code = {
 //
 function get_info(name) {
   var api_path = api.info_f(name)
-  var read = rddt_read(api_path)
+  var read = rddt_http(api_path)
 
   return read.data.children[0] //safe
 }
@@ -157,7 +157,7 @@ function get_parent_full(name) {
   var parent_link = get_parent_link(permalink)  
   var api_path = api.comments_link_f(parent_link)
 
-  var read = rddt_read(api_path)  
+  var read = rddt_http(api_path)  
   
   return read
 }
@@ -325,7 +325,7 @@ function update_wiki(page, content) {
     "page":page,
     "content":content
   }
-  var reads = rddt_read(api_path, undefined, payload)  
+  var reads = rddt_http(api_path, payload)  
 }
 
 //
@@ -334,7 +334,7 @@ function unsave_thing(name) {
   var payload = {
     "id":name
   }
-  var reads = rddt_read(api_path, undefined, payload)    
+  var reads = rddt_http(api_path, payload)    
 }
 
 //
@@ -389,7 +389,7 @@ function del_thing(name) {
   var payload = {
     "id":name
   }
-  var reads = rddt_read(api_path, undefined, payload)
+  var reads = rddt_http(api_path, payload)
   return true    
 }
 
@@ -399,7 +399,7 @@ function editusertext(id, text) {
     "text":text,
     "thing_id":id
   }
-  var reads = rddt_read(api_path, undefined, payload)    
+  var reads = rddt_http(api_path, payload)    
 }
 
 // only get t3 things
@@ -436,6 +436,6 @@ function vote_thing(obj, dir) {
     "id":obj.name,
     "dir":dir
   }
-  var reads = rddt_read(api_path, undefined, payload)    
+  var reads = rddt_http(api_path, payload)    
   return true //?
 }

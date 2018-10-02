@@ -2,7 +2,7 @@
 function batch_del_old_comments() {
   console.log("batch_del_old_comments() in")
   var api_path = api.comments_user_f(credential.username)
-  var reads = rddt_read(api_path)
+  var reads = rddt_http(api_path)
 
   for(var i in reads) {
     var data = reads[i].data
@@ -43,11 +43,11 @@ function batch_save_wikis_gd(wikis) {
   console.log("batch_save_wikis_gd() in")
   var api_path = api.pages_f(SUBREDDIT)
   if(wikis == undefined) {
-    var wikis = rddt_read(api_path).data
+    var wikis = rddt_http(api_path).data
   }
 
   for(var i in wikis) {
-    var page = get_page(wikis[i]) 
+    var page = get_page(wikis[i])
     var ids = get_ids_fr_page(page)
     var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
     
