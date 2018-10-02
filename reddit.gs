@@ -261,13 +261,13 @@ function add_goodpost(saved) {
 //
 function get_saved() {
   var reads = get_saved_children()
-  var objs = get_objects(reads, true)
+  var objs = get_objects(reads)
 
   return objs  
 }
 
 //
-function get_objects(reads, ifvalidated) {
+function get_objects(reads) {
   var objs = []    
   
   for(var i in reads) {
@@ -296,11 +296,9 @@ function get_objects(reads, ifvalidated) {
       continue  
     }
     
-    if(ifvalidated) {
-      var r = check_values(title, flair, age, id, name, permalink)
-      if(r == false) {
-        throw "check_values"  
-      }
+    var r = check_values(title, flair, age, id, name, permalink)
+    if(r == false) {
+      continue
     }
     
     var obj = {
@@ -405,7 +403,7 @@ function editusertext(id, text) {
 // only get t3 things
 function get_upvoted() {
   var reads = get_upvoted_children()
-  var objs = get_objects(reads, false)
+  var objs = get_objects(reads)
   
   return objs
 }
