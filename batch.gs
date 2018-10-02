@@ -41,9 +41,8 @@ function batch_del_old_comments() {
 //
 function batch_save_wikis_gd(wikis) {
   console.log("batch_save_wikis_gd() in")
-  var api_path = api.pages_f(SUBREDDIT)
   if(wikis == undefined) {
-    var wikis = rddt_http(api_path).data
+    var wikis = get_wikis(FLAIR_MAPPING)
   }
 
   for(var i in wikis) {

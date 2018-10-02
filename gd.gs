@@ -88,9 +88,7 @@ function get_ids_fr_gd(folder_id) {
     }    
   }
   
-  ids = ids.filter(function(item, pos) {
-    return ids.indexOf(item) == pos;
-  })
+  ids = get_unique(ids)
   
   IDS_GD = ids
   return IDS_GD

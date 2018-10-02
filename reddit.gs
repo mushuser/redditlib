@@ -19,6 +19,18 @@ var api = {
 }
 
 //
+function get_wikis(mapping) {
+  var values = []
+  for(var i in mapping) {
+    values.push(mapping[i])  
+  }
+  values = get_unique(values)  
+  
+  Logger.log(values)
+}
+
+
+//
 function get_wikicatalog(flair) {
   var f = flair.toLowerCase()
   var r = FLAIR_MAPPING[f]
@@ -69,9 +81,7 @@ function get_ids_fr_page(page) {
     }
   }
   
-  ids = ids.filter(function(item, pos) {
-    return ids.indexOf(item) == pos;
-  })
+  ids = get_unique(id)
 
   return ids
 }
