@@ -96,7 +96,7 @@ function batch_add_goodposts() {
     
     var c = check_values(s.catalog, s.title, s.flair, s.name)
     if(c == false) {
-      throw "check_values"  
+      continue  
     }      
     
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
