@@ -1,10 +1,11 @@
 // return fileName or undefined
 function save_json_gd(name) {
-  var data = get_parent(name)
-  var text = JSON.stringify(data)
+  var parent = get_parent_full(name)
+  var text = JSON.stringify(parent)
+  var data = get_parent_data(parent)
   var name = data.name
   var sr = data.subreddit
-  
+
   if(sr != SUBREDDIT) {
     console.info("SR=%s", sr)
     return undefined  

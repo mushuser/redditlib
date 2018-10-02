@@ -149,9 +149,7 @@ function get_parent_link(permalink) {
   return link
 }
 
-
-//
-function get_parent(name) {
+function get_parent_full(name) {
   var children = get_info(name)
   var data = children.data  
   var permalink = data.permalink
@@ -161,7 +159,18 @@ function get_parent(name) {
 
   var read = rddt_read(api_path)  
   
-  return read[0].data.children[0].data
+  return read
+}
+
+function get_parent_data(parent) {
+  return parent[0].data.children[0].data
+}
+
+//
+function get_parent(name) {
+  var read = get_parent_full(name)
+  
+  return get_parent_data(read)
 }
 
 
