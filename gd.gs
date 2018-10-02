@@ -1,9 +1,8 @@
 // return fileName or undefined
 function save_json_gd(id) {
   var name = get_name(id)
-  var parent = get_parent_comments(name)
-  var text = JSON.stringify(parent)
-  var data = parent[0].data.children[0].data
+  var data = get_parent(name)
+  var text = JSON.stringify(data)
   var name = data.name
   var sr = data.subreddit
   

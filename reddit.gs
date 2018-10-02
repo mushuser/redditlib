@@ -149,27 +149,9 @@ function get_parent_link(permalink) {
   return link
 }
 
-//
-function get_parent(name) { 
-  var data = get_info(name).data
-  var link_id = data.link_id // name
-  
-  if(link_id) {
-    // child
-    var id = get_id(link_id)
-  } else {
-    // parent itself
-    var id = data.id
-  }
-  
-  var api_path = api.comments_sr_f(SUBREDDIT, id)
-  var reads = rddt_read(api_path)
-  
-  return reads
-}
 
-//parent's comment
-function get_parent_comments(name) {
+//
+function get_parent(name) {
   var children = get_info(name)
   var data = children.data  
   var permalink = data.permalink
@@ -179,7 +161,7 @@ function get_parent_comments(name) {
 
   var read = rddt_read(api_path)  
   
-  return read
+  return read[0].data.children[0].data
 }
 
 
@@ -285,12 +267,12 @@ function get_objects(reads, ifvalidated) {
     var age = get_age(data.created_utc)
 
     var kind = get_kind(data.name)
-    
+   
     if(kind == "t1") {
       var parent_name = data.parent_id // name
       var parent = get_parent(parent_name)
       var flair = parent.link_flair_text
-      var title = get_escaped_title(data.title + "(回覆)")
+      var title = get_escaped_title(data.link_title + "(回覆)")
     } else if(kind == "t3") {
       var flair = data.link_flair_text // t3 only
       var title = get_escaped_title(data.title)
