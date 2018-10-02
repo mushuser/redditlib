@@ -14,7 +14,7 @@ function batch_del_old_comments() {
     var msg = Utilities.formatString("%s, %s, %s, %s", name, days_round, likes, body)
     
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
-      save_json_gd(data.id)
+      save_json_gd(name)
             
       var rr = del_thing(name)      
       if(rr) {
@@ -38,13 +38,12 @@ function batch_del_old_comments() {
 }
 
 //
-function batch_save_comments_gd(wikis) {
+function batch_save_wikis_gd(wikis) {
   var api_path = api.pages_f(SUBREDDIT)
   if(wikis == undefined) {
-    var wikis = rddt_read(api_path, "/data")
+    var wikis = rddt_read(api_path).data
   }
-  var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
-  
+
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
     var ids = get_ids_fr_page(page)
@@ -53,9 +52,8 @@ function batch_save_comments_gd(wikis) {
     }
     console.info("%s:%s",wikis[i],ids)
     for(var i2 in ids) {
-      if(ids_gd.indexOf(ids[i2]) < 0) {      
-        var r = save_json_gd(ids[i2])
-      }
+      var name = get_name(ids[i2])
+      var r = save_json_gd(name)
     }
   }
 }
@@ -97,6 +95,7 @@ function batch_add_goodposts() {
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
       up_vote(s)
+      save_json_gd(s.name)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
       clean_vote(s)

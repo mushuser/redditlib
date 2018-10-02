@@ -1,6 +1,5 @@
 // return fileName or undefined
-function save_json_gd(id) {
-  var name = get_name(id)
+function save_json_gd(name) {
   var data = get_parent(name)
   var text = JSON.stringify(data)
   var name = data.name
@@ -20,7 +19,14 @@ function save_json_gd(id) {
   if(r == false) {
     throw "check_values"
   }
-    
+  
+  var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
+  var id = get_id(name)
+  if(ids_gd.indexOf(id) > -1) {
+    console.info("file already added:%s", fileName)
+    return undefined
+  }
+  
   var file = DriveApp.createFile(fileName,text)
   if(file) {
     var folder = DriveApp.getFolderById(GD_FOLDER_ID)
