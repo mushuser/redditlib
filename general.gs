@@ -5,6 +5,8 @@ var MAX_AGE = 4
 
 var NOW = (new Date()).getTime()
 
+var IDS_GD;
+
 //
 function check_values(variables) {
   var msg = ""

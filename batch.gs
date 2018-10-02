@@ -1,5 +1,6 @@
 //
 function batch_del_old_comments() {
+  console.log("batch_del_old_comments() in")
   var api_path = api.comments_user_f(credential.username)
   var reads = rddt_read(api_path)
 
@@ -33,12 +34,13 @@ function batch_del_old_comments() {
       break
     }
   }
-  
+  console.log("batch_del_old_comments() out")
   return 
 }
 
 //
 function batch_save_wikis_gd(wikis) {
+  console.log("batch_save_wikis_gd() in")
   var api_path = api.pages_f(SUBREDDIT)
   if(wikis == undefined) {
     var wikis = rddt_read(api_path).data
@@ -47,15 +49,22 @@ function batch_save_wikis_gd(wikis) {
   for(var i in wikis) {
     var page = get_page(wikis[i]) 
     var ids = get_ids_fr_page(page)
+    var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
+    
     if(ids.length < 1) {
       continue  
     }
+
     console.info("%s:%s",wikis[i],ids)
     for(var i2 in ids) {
+      if(ids_gd.indexOf(ids[i2]) > -1) {
+        continue  
+      }
       var name = get_name(ids[i2])
       var r = save_json_gd(name)
     }
   }
+  console.log("batch_save_wikis_gd() out")
 }
 
 //
@@ -76,6 +85,8 @@ function batch_clean_voted() {
 
 //
 function batch_add_goodposts() {
+  console.log("batch_add_goodposts() in")
+  
   var saveds = get_saved()
 
   for(var i in saveds) {
@@ -106,4 +117,5 @@ function batch_add_goodposts() {
       console.info("empty page") 
     }
   }
+  console.log("batch_add_goodposts() out") 
 }

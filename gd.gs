@@ -18,13 +18,13 @@ function save_json_gd(name) {
   var r = check_values(flair, title, name, fileName)
   
   if(r == false) {
-    throw "check_values"
-  }
+    return undefined
+  }  
   
   var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
   var id = get_id(name)
+  
   if(ids_gd.indexOf(id) > -1) {
-    console.info("file already saved:%s", fileName)
     return undefined
   }
   
@@ -68,6 +68,10 @@ function clean_folders_gd(file) {
 
 //
 function get_ids_fr_gd(folder_id) {
+  if(IDS_GD) {
+    return IDS_GD  
+  }
+  
   var folder = DriveApp.getFolderById(folder_id)
   var files = folder.getFiles()
   var ids = []
@@ -88,5 +92,6 @@ function get_ids_fr_gd(folder_id) {
     return ids.indexOf(item) == pos;
   })
   
-  return ids
+  IDS_GD = ids
+  return IDS_GD
 }
