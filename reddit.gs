@@ -81,7 +81,7 @@ function get_ids_fr_page(page) {
     }
   }
   
-  ids = get_unique(id)
+  ids = get_unique(ids)
 
   return ids
 }
