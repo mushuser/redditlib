@@ -23,7 +23,7 @@ function save_json_gd(name) {
   var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
   var id = get_id(name)
   if(ids_gd.indexOf(id) > -1) {
-    console.info("file already added:%s", fileName)
+    console.info("file already saved:%s", fileName)
     return undefined
   }
   
