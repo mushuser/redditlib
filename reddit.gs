@@ -13,7 +13,7 @@ var api = {
   upvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/upvoted.json?limit=100"},
   wiki_edit_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/api/wiki/edit.json"},
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
-  comments_sr_f: function(sr, id){return "https://www.reddit.com/r/"+sr+"/comments/"+id+".json"},
+  comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+".json?limit=100"},
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
@@ -446,4 +446,11 @@ function vote_thing(obj, dir) {
   }
   var reads = rddt_http(api_path, payload)    
   return true //?
+}
+
+function get_comments() {
+  var api_path = api.comments_sr_f(SUBREDDIT)
+  var reads = rddt_http(api_path)    
+ 
+  return reads  
 }
