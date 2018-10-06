@@ -74,11 +74,3 @@ function get_unique(list){
   
   return list
 }
-
-function diff(otherArray){
-  return function(current){
-    return otherArray.filter(function(other){
-      return other.value == current.value && other.display == current.display
-    }).length == 0;
-  }
-}

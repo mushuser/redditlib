@@ -466,16 +466,12 @@ function get_new_comment_names() {
     names.push(data.name)
   }
   
-  set_checked_comments(names)
-  
   var checkeds = get_checked_comments()
   
-  var diff = names.diff(checkeds)
+  var diff = names.filter( function( el ) {
+    return checkeds.indexOf( el ) < 0;
+  })
   
+  set_checked_comments(names)
   return diff
-}
-
-function mlab_save_new() {
-  var news = get_new_comment_names()
-  
 }

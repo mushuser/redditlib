@@ -3,3 +3,9 @@ function get_checked_comments() {
   
   return checkeds.split(",")
 }
+
+function set_checked_comments(names) {
+  var checkeds = script_pro.setProperty("checked", names.join(","))
+  
+  return checkeds
+}
