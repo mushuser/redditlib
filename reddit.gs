@@ -13,7 +13,7 @@ var api = {
   upvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/upvoted.json?limit=100"},
   wiki_edit_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/api/wiki/edit.json"},
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
-  comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+".json?limit=100"},
+  comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100"},
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
@@ -21,7 +21,7 @@ var api = {
 //
 function get_wikis(mapping) {
   var values = []
-  for(var i in mapping) {
+  for(var i=0; i<mapping.length; i++) {
     values.push(mapping[i])  
   }
   values = get_unique(values)  
@@ -74,7 +74,7 @@ function get_ids_fr_page(page) {
   var ids = [] 
   var lines = page.split("\n")
   
-  for(var i in lines) {
+  for(var i=0;i<lines.length;i++) {
     var r = get_id_fr_line(lines[i])
     if(r) {
       ids.push(r)
@@ -280,7 +280,7 @@ function get_saved() {
 function get_objects(reads) {
   var objs = []    
   
-  for(var i in reads) {
+  for(var i=0; i<reads.length; i++) {
     var data = reads[i].data
     var kind_read = reads[i].kind
     var age = get_age(data.created_utc)
@@ -349,7 +349,7 @@ function unsave_thing(name) {
 function check_idinpage(page, id) {
   var ids = get_ids_fr_page(page)
 
-  for(var i in ids) {
+  for(var i=0;i<ids.length;i++) {
     if(ids[i] == id) {
       return true  
     }
@@ -448,9 +448,34 @@ function vote_thing(obj, dir) {
   return true //?
 }
 
-function get_comments() {
+
+function get_comments(listing_max) {
   var api_path = api.comments_sr_f(SUBREDDIT)
-  var reads = rddt_http(api_path)    
+  var reads = rddt_http(api_path,undefined,listing_max)    
  
   return reads  
+}
+
+
+function get_new_comment_names() {
+  var currents = get_comments(100)
+  var names = []
+
+  for(var i=0; i<currents.length; i++) {
+    var data = currents[i].data
+    names.push(data.name)
+  }
+  
+  set_checked_comments(names)
+  
+  var checkeds = get_checked_comments()
+  
+  var diff = names.diff(checkeds)
+  
+  return diff
+}
+
+function mlab_save_new() {
+  var news = get_new_comment_names()
+  
 }

@@ -12,7 +12,7 @@ function check_values(variables) {
   var msg = ""
   var valid = true
   
-  for(var i in arguments) {
+  for(var i=0; i<arguments.length; i++) {
     var arg = arguments[i]
     msg = msg + "[" + i.toString() + "]" + "=" + arg + ", "
     if(arg == undefined) {
@@ -73,4 +73,12 @@ function get_unique(list){
   }) 
   
   return list
+}
+
+function diff(otherArray){
+  return function(current){
+    return otherArray.filter(function(other){
+      return other.value == current.value && other.display == current.display
+    }).length == 0;
+  }
 }

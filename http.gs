@@ -1,5 +1,5 @@
 //
-function rddt_http(api_path, payload) {
+function rddt_http(api_path, payload, listing_max) {
   var options;
   var mute = false
   
@@ -44,8 +44,11 @@ function rddt_http(api_path, payload) {
       
       lastid = ids[ids.length-1]
       
-      if( dist < 100 ) {
-        return ret_children      
+      if((dist < 100) || (ids.length > listing_max)) {
+        if(listing_max) {
+          ret_children = ret_children.slice(0, listing_max)
+        }
+        return ret_children
       }    
     }    
   } else { 

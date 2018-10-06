@@ -4,7 +4,7 @@ function batch_del_old_comments() {
   var api_path = api.comments_user_f(credential.username)
   var reads = rddt_http(api_path)
 
-  for(var i in reads) {
+  for(var i=0;i<reads.length;i++) {
     var data = reads[i].data
     var likes = data.likes // true, false, null
     var age = get_age(data.created_utc)
@@ -45,7 +45,7 @@ function batch_save_wikis_gd(wikis) {
     var wikis = get_wikis(FLAIR_MAPPING)
   }
 
-  for(var i in wikis) {
+  for(var i=0; i<wikis.length; i++) {
     var page = get_page(wikis[i])
     var ids = get_ids_fr_page(page)
     var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
@@ -69,7 +69,7 @@ function batch_save_wikis_gd(wikis) {
 //
 function batch_clean_voted() {
   var objs = get_upvoted()
-  for(var i in objs) {
+  for(var i=0; i<objs.length; i++) {
     var obj = objs[i]
     console.info(obj)
     
@@ -88,7 +88,7 @@ function batch_add_goodposts() {
   
   var saveds = get_saved()
 
-  for(var i in saveds) {
+  for(var i=0;i<saveds.length;i++) {
     var s = saveds[i]
     
     s.catalog = get_wikicatalog(s.flair)
