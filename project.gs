@@ -1,4 +1,4 @@
-var httpretries = 3
+var httpretries = 3 
 
 var credential = {
   username:"",
@@ -22,16 +22,17 @@ function init_project(sr, creds, folder_id, flair_mapping) {
   FLAIR_MAPPING = flair_mapping
 }
 
-
 function check_init() {
   if(
     (SUBREDDIT == undefined) || 
     (credential.username == undefined) ||
-    (credential.username == undefined) ||
-    (credential.username == undefined) ||
-    (credential.username == undefined) ||
+    (credential.client_id == undefined) ||
+    (credential.secret == undefined) ||
+    (credential.refresh_token == undefined) ||
+    (FLAIR_MAPPING == undefined) ||
     (GD_FOLDER_ID == undefined)
     ){
-    throw "init_project() failed, call init_project()."      
+    var msg = "init_project() failed, call init_project()."
+    throw msg  
   }  
 }
