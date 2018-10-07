@@ -1,7 +1,7 @@
 var ARCHIVED_AGE = 180 // six months in days
 
 var MIN_AGE = 3
-var MAX_AGE = 4
+var MAX_AGE = 5
 
 var NOW = (new Date()).getTime()
 
