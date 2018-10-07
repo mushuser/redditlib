@@ -160,6 +160,7 @@ function get_parent_link(permalink) {
   return link
 }
 
+// both t1 and t3
 function get_parent_full(name) {
   var children = get_info(name)
   var data = children.data  
@@ -173,6 +174,7 @@ function get_parent_full(name) {
   return read
 }
 
+// t3 only
 function get_parent_data(parent) {
   return parent[0].data.children[0].data
 }
