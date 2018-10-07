@@ -14,6 +14,7 @@ var api = {
   wiki_edit_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/api/wiki/edit.json"},
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
   comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100"},
+  comments_sr_after_f: function(sr,after){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100&after="+after},  
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
@@ -457,6 +458,61 @@ function get_comments(listing_max) {
 }
 
 
+function get_names_fr_obj(objs) {
+  var names = []
+  
+  for(var i in objs) {
+    var name = objs[i].data.name
+    names.push(name)
+  }
+  
+  return names  
+}
+
+
+function xxget_comments_after900() {
+  var last101 = get_last101_comments_pro()
+  
+  if(last101) {
+    var nth900 = last101[0]
+    var api_path = api.comments_sr_after_f(SUBREDDIT, nth900)
+    var reads = rddt_http(api_path)
+    var names = get_names_fr_obj(reads)
+    
+    var diffs = names.filter( function( el ) {
+      return last101.indexOf( el ) < 0;
+    })
+    
+    console.log("diffs:%s", diffs)
+    
+    for(var i in diffs) {
+        
+    }
+
+  } else {
+      
+  }
+  
+  var names = []
+  
+  for(var i in reads) {
+    var read = reads[i]
+    var name = reads.data.name
+    names.push(name)
+  }
+  
+  set_last100_comments_pro(names)
+  
+  return reads
+}
+
+
+function get_nth_comment(nth) {
+  var comments = get_comments(nth)  
+  return comments[nth-1]
+}
+
+
 function get_new_comment_names() {
   var currents = get_comments(100)
   var names = []
@@ -466,12 +522,12 @@ function get_new_comment_names() {
     names.push(data.name)
   }
   
-  var checkeds = get_checked_comments()
+  var checkeds = get_checked_comments_pro()
   
   var diff = names.filter( function( el ) {
     return checkeds.indexOf( el ) < 0;
   })
   
-  set_checked_comments(names)
+  set_checked_comments_pro(names)
   return diff
 }
