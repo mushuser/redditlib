@@ -121,7 +121,7 @@ function httpretry(url, options) {
         return response
       }
     } catch(e) {
-      Logger.log(e)
+      console.log(e)
       Utilities.sleep(1000 * 1)
       if( i >= httpretries ) {
         throw_print("reached max retry!")
