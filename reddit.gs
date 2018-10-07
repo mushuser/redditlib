@@ -458,6 +458,27 @@ function get_comments(listing_max) {
 }
 
 
+function get_new_comment_names() {
+  var currents = get_comments(100)
+  var names = []
+
+  for(var i=0; i<currents.length; i++) {
+    var data = currents[i].data
+    names.push(data.name)
+  }
+  
+  var checkeds = get_checked_comments_pro()
+  
+  var diff = names.filter( function( el ) {
+    return checkeds.indexOf( el ) < 0;
+  })
+  
+  set_checked_comments_pro(names)
+  return diff
+}
+
+
+////////// below not finished
 function get_names_fr_obj(objs) {
   var names = []
   
@@ -510,24 +531,4 @@ function xxget_comments_after900() {
 function get_nth_comment(nth) {
   var comments = get_comments(nth)  
   return comments[nth-1]
-}
-
-
-function get_new_comment_names() {
-  var currents = get_comments(100)
-  var names = []
-
-  for(var i=0; i<currents.length; i++) {
-    var data = currents[i].data
-    names.push(data.name)
-  }
-  
-  var checkeds = get_checked_comments_pro()
-  
-  var diff = names.filter( function( el ) {
-    return checkeds.indexOf( el ) < 0;
-  })
-  
-  set_checked_comments_pro(names)
-  return diff
 }
