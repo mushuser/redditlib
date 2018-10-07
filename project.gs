@@ -1,8 +1,8 @@
 var credential = {
-  username:"",
-  client_id:"",
-  secret:"",
-  refresh_token:""  
+  username:undefined,
+  client_id:undefined,
+  secret:undefined,
+  refresh_token:undefined  
 }
 
 var SUBREDDIT;
