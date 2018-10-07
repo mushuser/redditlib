@@ -1,9 +1,12 @@
 //
 function batch_del_old_comments() {
-  console.log("batch_del_old_comments() in")
   var api_path = api.comments_user_f(credential.username)
   var reads = rddt_http(api_path)
-
+  
+  if(reads.length > 0) {
+    console.log("batch_del_old_comments() in")
+  }
+  
   for(var i=0;i<reads.length;i++) {
     var data = reads[i].data
     var likes = data.likes // true, false, null
@@ -34,15 +37,20 @@ function batch_del_old_comments() {
       break
     }
   }
-  console.log("batch_del_old_comments() out")
+  if(reads.length > 0) {
+    console.log("batch_del_old_comments() out")
+  }
   return 
 }
 
 //
 function batch_save_wikis_gd(wikis) {
-  console.log("batch_save_wikis_gd() in")
   if(wikis == undefined) {
     var wikis = get_wikis(FLAIR_MAPPING)
+  }
+  
+  if(wikis.length > 0) {
+    console.log("batch_save_wikis_gd() in")
   }
 
   for(var i=0; i<wikis.length; i++) {
@@ -63,7 +71,9 @@ function batch_save_wikis_gd(wikis) {
       var r = save_json_gd(name)
     }
   }
-  console.log("batch_save_wikis_gd() out")
+  if(wikis.length > 0) {
+    console.log("batch_save_wikis_gd() out")
+  }
 }
 
 //
