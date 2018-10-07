@@ -84,10 +84,11 @@ function batch_clean_voted() {
 
 //
 function batch_add_goodposts() {
-  console.log("batch_add_goodposts() in")
-  
   var saveds = get_saved()
-
+  
+  if(saveds.length > 0) {
+    console.log("batch_add_goodposts() in")
+  }
   for(var i=0;i<saveds.length;i++) {
     var s = saveds[i]
     
@@ -116,5 +117,8 @@ function batch_add_goodposts() {
       console.info("empty page") 
     }
   }
-  console.log("batch_add_goodposts() out") 
+  
+  if(saveds.length > 0) {
+    console.log("batch_add_goodposts() out")
+  } 
 }
