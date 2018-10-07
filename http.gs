@@ -1,3 +1,4 @@
+var httpretries = 3 
 //
 function rddt_http(api_path, payload, listing_max) {
   var options;

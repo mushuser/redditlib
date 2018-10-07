@@ -1,8 +1,17 @@
+var WAIT_DAYS = 2
+
 // return fileName or undefined
 function save_json_gd(name) {
   var parent = get_parent_full(name)
-  var text = JSON.stringify(parent)
   var data = get_parent_data(parent)
+  var age = get_age(data.created_utc)
+  
+  if(age <= WAIT_DAYS) {
+    console.info("not saved,age=%d:%s", age, name)
+    return undefined  
+  }
+  
+  var text = JSON.stringify(parent)
   var name = data.name
   var sr = data.subreddit
 

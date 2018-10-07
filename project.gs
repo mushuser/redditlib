@@ -1,5 +1,3 @@
-var httpretries = 3 
-
 var credential = {
   username:"",
   client_id:"",

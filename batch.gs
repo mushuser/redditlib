@@ -105,7 +105,7 @@ function batch_add_goodposts() {
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
       up_vote(s)
-      save_json_gd(s.name)
+      //save_json_gd(s.name)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
       clean_vote(s)
