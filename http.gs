@@ -1,4 +1,5 @@
 var httpretries = 3 
+
 //
 function rddt_http(api_path, payload, listing_max) {
   var options;
@@ -76,6 +77,7 @@ function get_bearer() {
   return get_bearerauth(access_token)
 }
 
+
 function get_accesstoken(basic_auth, refresh_token) {
   if(ACCESS_TOKEN) {
     return ACCESS_TOKEN
@@ -121,11 +123,11 @@ function httpretry(url, options) {
         return response
       }
     } catch(e) {
-      Logger.log(e)
-      console.log(e)
       Utilities.sleep(1000 * 1)
       if( i >= httpretries ) {
         throw_print("reached max retry!")
+        Logger.log(e)
+        console.log(e)
       }    
     }
   }  
