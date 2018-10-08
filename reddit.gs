@@ -22,8 +22,9 @@ var api = {
 //
 function get_wikis(mapping) {
   var values = []
-  for(var i=0; i<mapping.length; i++) {
-    values.push(mapping[i])  
+  
+  for(var m in mapping) {
+    values.push(mapping[m])  
   }
   values = get_unique(values)  
   

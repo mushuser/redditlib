@@ -45,6 +45,8 @@ function batch_del_old_comments() {
 
 //
 function batch_save_wikis_gd(wikis) {
+  var wikis = get_wikis(FLAIR_MAPPING)
+
   if(wikis == undefined) {
     var wikis = get_wikis(FLAIR_MAPPING)
   }
