@@ -8,7 +8,6 @@ function save_json_gd(name) {
   var title = data.title
   
   if(age <= WAIT_DAYS) {
-    
     console.info("not saved,age=%d:%s:%s", age, title, name)
     return undefined  
   }

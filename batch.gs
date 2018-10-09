@@ -11,11 +11,10 @@ function batch_del_old_comments() {
     var data = reads[i].data
     var likes = data.likes // true, false, null
     var age = get_age(data.created_utc)
-    var days_round = Math.round(age)
     var name = data.name
     var body = data.body.slice(0, 15)
     
-    var msg = Utilities.formatString("%s, %s, %s, %s", name, days_round, likes, body)
+    var msg = Utilities.formatString("%s, %s, %s, %s", name, age, likes, body)
     
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
       save_json_gd(name)
