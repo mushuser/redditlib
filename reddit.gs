@@ -116,8 +116,9 @@ function get_upvoted_children() {
 function get_age(created) {
     var created = created * 1000
     var age_days = (NOW - created) / 86400000
+    var round = Math.round(age_days * 10)/10
     
-    return age_days
+    return round
 }
 
 //

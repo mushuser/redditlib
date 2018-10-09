@@ -5,9 +5,11 @@ function save_json_gd(name) {
   var parent = get_parent_full(name)
   var data = get_parent_data(parent)
   var age = get_age(data.created_utc)
+  var title = data.title
   
   if(age <= WAIT_DAYS) {
-    console.info("not saved,age=%d:%s", age, name)
+    
+    console.info("not saved,age=%d:%s:%s", age, title, name)
     return undefined  
   }
   
@@ -28,7 +30,7 @@ function save_json_gd(name) {
   
   if(r == false) {
     return undefined
-  }  
+  }
   
   var ids_gd = get_ids_fr_gd(GD_FOLDER_ID)
   var id = get_id(name)
