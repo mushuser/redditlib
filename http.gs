@@ -110,7 +110,7 @@ function get_accesstoken(basic_auth, refresh_token) {
 }
 
 //
-function httpretry(url, options) {
+function httpretry(url, options, ifNthrow) {
   for(var i = 1; i <= httpretries; i++) {
     try { 
       if( options == undefined ) {
@@ -125,9 +125,11 @@ function httpretry(url, options) {
     } catch(e) {
       Utilities.sleep(1000 * 1)
       if( i >= httpretries ) {
-        throw_print("reached max retry!")
-        Logger.log(e)
-        console.log(e)
+        if(ifNthrow == true) {
+          console.log(e)
+        } else {
+          throw_print(e)
+        }
       }    
     }
   }  
