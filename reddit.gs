@@ -1,4 +1,5 @@
 var MAX_TITLE_LEN = 30
+
 //
 var api = {
   save: "https://oauth.reddit.com/api/save.json",
@@ -30,7 +31,6 @@ function get_wikis(mapping) {
   
   return values
 }
-
 
 //
 function get_wikicatalog(flair) {
@@ -152,7 +152,7 @@ function get_info(name) {
   return read.data.children[0] //safe
 }
 
-
+//
 function get_parent_link(permalink) {
   var re = /\/([a-zA-Z0-9]*)/g
   
@@ -187,7 +187,6 @@ function get_parent(name) {
   
   return get_parent_data(read)
 }
-
 
 //
 function get_content_fr_info(info) {
@@ -407,6 +406,7 @@ function del_thing(name) {
   return true    
 }
 
+//
 function editusertext(id, text) {
   var api_path = api.del
   var payload = {
@@ -454,7 +454,7 @@ function vote_thing(obj, dir) {
   return true //?
 }
 
-
+//
 function get_comments(listing_max) {
   var api_path = api.comments_sr_f(SUBREDDIT)
   var reads = rddt_http(api_path,undefined,listing_max)    
@@ -462,7 +462,7 @@ function get_comments(listing_max) {
   return reads  
 }
 
-
+//
 function get_new_comment_names() {
   var currents = get_comments(100)
   var names = []
@@ -481,7 +481,6 @@ function get_new_comment_names() {
   set_checked_comments_pro(names)
   return diff
 }
-
 
 ////////// below not finished
 function get_names_fr_obj(objs) {
