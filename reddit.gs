@@ -379,7 +379,8 @@ function get_escaped_title(title) {
 //
 function get_escaped_body(body) {
   var r = body
-  r = r.replace(/&amp;/, "\&")  
+  r = r.replace(/&amp;/mg, "\&")
+  
   return r
 }
 
