@@ -4,20 +4,26 @@ function get_checked_comments_pro() {
   return checkeds.split(",")
 }
 
+
 function set_checked_comments_pro(names) {
   var pro = script_pro.setProperty("checked", names.join(","))
   
   return pro
 }
 
-function get_last101_comments_pro() {
-  var last100 = script_pro.getProperty("last100")
+
+function get_last_checked_pro() {
+  var last_checked = script_pro.getProperty("last_checked")
   
-  return last100.split(",")
+  return last_checked
 }
 
-function set_last101_comments_pro(names) {
-  var pro = script_pro.setProperty("last100", names.join(","))
+
+function set_last_checked_pro(last_checked) {
+  if(typeof(last_checked) != 'string') {
+    last_checked = last_checked.toString()
+  }
+  var pro = script_pro.setProperty("last_checked", last_checked)
   
   return pro
 }

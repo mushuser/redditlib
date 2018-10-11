@@ -457,32 +457,12 @@ function vote_thing(obj, dir) {
 //
 function get_comments(listing_max) {
   var api_path = api.comments_sr_f(SUBREDDIT)
-  var reads = rddt_http(api_path,undefined,listing_max)    
+  var reads = rddt_http(api_path, undefined, listing_max)    
  
   return reads  
 }
 
 //
-function get_new_comment_names() {
-  var currents = get_comments(100)
-  var names = []
-
-  for(var i=0; i<currents.length; i++) {
-    var data = currents[i].data
-    names.push(data.name)
-  }
-  
-  var checkeds = get_checked_comments_pro()
-  
-  var diff = names.filter( function( el ) {
-    return checkeds.indexOf( el ) < 0;
-  })
-  
-  set_checked_comments_pro(names)
-  return diff
-}
-
-////////// below not finished
 function get_names_fr_obj(objs) {
   var names = []
   
@@ -494,7 +474,32 @@ function get_names_fr_obj(objs) {
   return names  
 }
 
+//
+function get_new_comment_names() {
+  var currents = get_comments(30)
+  var names = get_names_fr_obj(currents)
+  
+  var last_checked = get_last_checked_pro()
+  set_last_checked_pro(names[0])
+  
+  if((last_checked == null) || (last_checked == "")) {
+    last_checked = [names[0]]
+    return last_checked
+  } 
+  
+  var diff = []
+  for(var i in names) {
+    if(names[i] != last_checked) {
+      diff.push(names[i])  
+    } else {
+      break  
+    }
+  }
+ 
+  return diff
+}
 
+////////// below not finished
 function xxget_comments_after900() {
   var last101 = get_last101_comments_pro()
   
