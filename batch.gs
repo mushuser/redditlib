@@ -63,7 +63,7 @@ function batch_save_wikis_gd(wikis) {
       continue  
     }
 
-    console.info("%s:%s",wikis[i],ids)
+//    console.info("%s:%s",wikis[i],ids)
     for(var i2 in ids) {
       if(ids_gd.indexOf(ids[i2]) > -1) {
         continue  
