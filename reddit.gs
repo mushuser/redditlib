@@ -12,6 +12,7 @@ var api = {
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
   upvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/upvoted.json?limit=100"},
+  downvoted_f: function(user){return "https://oauth.reddit.com/user/"+user+"/downvoted.json?limit=100"},  
   wiki_edit_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/api/wiki/edit.json"},
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
   comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100"},
@@ -105,9 +106,17 @@ function get_page_obj(wiki_path, obj_path) {
 }
 
 //
-function get_upvoted_children() {
+function get_upvoted_children(max) {
   var api_path = api.upvoted_f(credential.username)
-  var reads = rddt_http(api_path)
+  var reads = rddt_http(api_path, "", max)
+
+  return reads
+}
+
+//
+function get_downvoted_children(max) {
+  var api_path = api.downvoted_f(credential.username)
+  var reads = rddt_http(api_path, "", max)
 
   return reads
 }
@@ -275,13 +284,13 @@ function add_goodpost(saved) {
 //
 function get_saved() {
   var reads = get_saved_children()
-  var objs = get_objects(reads)
+  var objs = get_objects(reads, true)
 
   return objs  
 }
 
 //
-function get_objects(reads) {
+function get_objects(reads, ifcheck) {
   var objs = []    
   
   for(var i=0; i<reads.length; i++) {
@@ -310,9 +319,11 @@ function get_objects(reads) {
       continue  
     }
     
-    var r = check_values(title, flair, age, id, name, permalink)
-    if(r == false) {
-      continue
+    if(ifcheck) {
+      var r = check_values(title, flair, age, id, name, permalink)
+      if(r == false) {
+        continue
+      }
     }
     
     var obj = {
@@ -329,6 +340,7 @@ function get_objects(reads) {
   
   return objs  
 }
+
 
 //
 function update_wiki(page, content) {
@@ -417,12 +429,21 @@ function editusertext(id, text) {
 }
 
 // only get t3 things
-function get_upvoted() {
-  var reads = get_upvoted_children()
+function get_upvoted(max) {
+  var reads = get_upvoted_children(max)
   var objs = get_objects(reads)
   
   return objs
 }
+
+// 
+function get_downvoted(max) {
+  var reads = get_downvoted_children(max)
+  var objs = get_objects(reads)
+  
+  return objs
+}
+
 
 //
 function up_vote(obj) {
@@ -450,9 +471,32 @@ function vote_thing(obj, dir) {
     "id":obj.name,
     "dir":dir
   }
+  
   var reads = rddt_http(api_path, payload)    
+  
   return true //?
 }
+
+function voter_vote(obj, dir) {
+  if(obj.age > ARCHIVED_AGE) {
+    return false
+  }
+  
+  var api_path = api.vote  
+  
+  var payload = {
+    "id":obj.name,
+    "dir":dir
+  }
+  
+  for(var i in credential_voters) {
+    var c = credential_voters[i]
+    var json = voter_http(api_path, payload, c)
+  }
+  
+  return true
+}
+
 
 //
 function get_comments(listing_max) {

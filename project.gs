@@ -5,17 +5,22 @@ var credential = {
   refresh_token:undefined  
 }
 
+var credential_voters = undefined
+
 var SUBREDDIT;
 var GD_FOLDER_ID;
 var ACCESS_TOKEN;
 var FLAIR_MAPPING;
 
-function init_project(sr, creds, folder_id, flair_mapping) {
+function init_project(sr, creds, creds_voters, folder_id, flair_mapping) {
   SUBREDDIT = sr
   credential.username = creds.username
   credential.client_id = creds.client_id
   credential.secret = creds.secret
   credential.refresh_token = creds.refresh_token
+  
+  credential_voters = creds_voters
+  
   GD_FOLDER_ID = folder_id
   FLAIR_MAPPING = flair_mapping
 }
@@ -27,6 +32,7 @@ function check_init() {
     (credential.client_id == undefined) ||
     (credential.secret == undefined) ||
     (credential.refresh_token == undefined) ||
+    (credential_voters == undefined) ||  
     (FLAIR_MAPPING == undefined) ||
     (GD_FOLDER_ID == undefined)
     ){

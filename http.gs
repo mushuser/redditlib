@@ -1,5 +1,26 @@
 var httpretries = 3 
 
+function voter_http(api_path, payload, creds) {
+  var mute = false
+  
+  var headers = {
+    "Authorization":get_bearer(creds)
+  }     
+  
+  var options = {
+    "headers":headers,
+    "payload":payload,
+    "muteHttpExceptions":mute
+  }
+  
+  var response = httpretry(api_path, options)
+  
+  var text = response.getContentText()
+  var json = JSON.parse(text)     
+  
+  return json
+}
+
 //
 function rddt_http(api_path, payload, listing_max) {
   var options;
@@ -64,14 +85,18 @@ function rddt_http(api_path, payload, listing_max) {
 }  
 
 //
-function get_bearer() {
+function get_bearer(creds) {
+  if(creds == undefined) {
+    creds = credential
+  }
+  
   var basic_auth = get_basicauth(
-    credential.client_id, 
-    credential.secret)
+    creds.client_id, 
+    creds.secret)
 
   var access_token = get_accesstoken(
     basic_auth,
-    credential.refresh_token
+    creds.refresh_token
   ) 
 
   return get_bearerauth(access_token)

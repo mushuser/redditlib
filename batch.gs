@@ -36,9 +36,11 @@ function batch_del_old_comments() {
       break
     }
   }
+  
   if(reads.length > 0) {
     console.log("batch_del_old_comments() out")
   }
+  
   return 
 }
 
@@ -77,7 +79,7 @@ function batch_save_wikis_gd(wikis) {
   }
 }
 
-//
+// XXXXXXXXXx
 function batch_clean_voted() {
   var objs = get_upvoted()
   for(var i=0; i<objs.length; i++) {
@@ -132,4 +134,41 @@ function batch_add_goodposts() {
   if(saveds.length > 0) {
     console.log("batch_add_goodposts() out")
   } 
+}
+
+function batch_voter() {
+  // up
+  var obj_up = get_argument(ARG_QUEUE_UP)
+  if(obj_up != undefined) {
+    voter_vote(obj_up, "1")
+    console.log("up:%s", JSON.stringify(obj_up))  
+  }
+  
+  // down
+  var obj_down = get_argument(ARG_QUEUE_DOWN)
+  if(obj_down != undefined) {
+    voter_vote(obj_down, "-1")
+    console.log("down:%s", JSON.stringify(obj_down))  
+  }
+}
+
+
+function batch_get_voter_arguments() {
+  // get upvoted
+  var ups = get_upvoted(30)
+  
+  for(var i=0; i<ups.length; i++) {
+    var obj = ups[i]
+    
+    set_argument(ARG_QUEUE_UP, obj)
+  }
+  
+  // get downvoted
+  var downs = get_downvoted(10)
+    
+  for(var i=0; i<downs.length; i++) {
+    var obj = downs[i]
+    
+    set_argument(ARG_QUEUE_DOWN, obj)
+  }
 }
