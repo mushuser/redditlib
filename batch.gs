@@ -137,7 +137,7 @@ function batch_add_goodposts() {
   } 
 }
 
-// 5 minutes
+
 function batch_voter_vote() {
   var obj = get_voter_queue()
   
@@ -176,24 +176,17 @@ function batch_voter_vote() {
 // 1 day = 1440 minutes / 5 minutes = 288 times
 // 30(up+down) * 6 users * 5 minutes = 900 minutes
 function batch_set_arg_queue() {
-  // get upvoted & downvoted
   var ups = get_upvoted(20)
   var downs = get_downvoted(10)
-  var updowns = []
-  
-  for(var i in ups) {
-    updowns.push(ups[i])
-  }
-  
-  for(var i in downs) {
-    updowns.push(downs[i])
-  }
+  var updowns = ups.concat(downs)
   
   for(var i=0; i<updowns.length; i++) {
     voter_obj.age = updowns[i].age
+   
     if(voter_obj.age > ARCHIVED_AGE) {
       continue  
     }
+    
     voter_obj.name = updowns[i].name
     
     if(i < ups.length) { 
@@ -202,9 +195,7 @@ function batch_set_arg_queue() {
       voter_obj.dir = "-1"
     }
       
-    voter_obj.title = updowns[i].title.slice(0,15)
-    
+    voter_obj.title = updowns[i].title.slice(0,15)    
     set_arg_queue(voter_obj)
   }
-  
 }
