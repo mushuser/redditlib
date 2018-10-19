@@ -82,6 +82,7 @@ function batch_save_wikis_gd(wikis) {
 // XXXXXXXXXx
 function batch_clean_voted() {
   var objs = get_upvoted()
+
   for(var i=0; i<objs.length; i++) {
     var obj = objs[i]
     console.info(obj)
@@ -136,39 +137,74 @@ function batch_add_goodposts() {
   } 
 }
 
-function batch_voter() {
-  // up
-  var obj_up = get_argument(ARG_QUEUE_UP)
-  if(obj_up != undefined) {
-    voter_vote(obj_up, "1")
-    console.log("up:%s", JSON.stringify(obj_up))  
+// 5 minutes
+function batch_voter_vote() {
+  var obj = get_voter_queue()
+  
+  if(obj == undefined) { 
+//    console.log("get_voter_queue() is empty")
+    return 
   }
   
-  // down
-  var obj_down = get_argument(ARG_QUEUE_DOWN)
-  if(obj_down != undefined) {
-    voter_vote(obj_down, "-1")
-    console.log("down:%s", JSON.stringify(obj_down))  
+  if(obj.age > ARCHIVED_AGE) {
+    console.log("over aged:%s:%s:%s:%s:%d", obj.title, obj.dir, obj.name, obj.voter, obj.age)
+    return
   }
+  
+  var like = get_voter_likes(obj.name, obj.voter)
+  var dir = get_dir_fr_likes(like)
+  
+  if(dir == obj.dir) {
+    console.log("skipped vote:%s:%s:%s:%s:%d", obj.title, obj.dir, obj.name, obj.voter, obj.age)    
+    return  
+  }
+  
+  var creds = get_voter_creds(obj.voter)
+  
+  var payload = {
+    "id":obj.name,
+    "dir":obj.dir
+  }
+  
+  console.log("voter:%s:%s:%s:%s:%d", obj.title, obj.dir, obj.name, obj.voter, obj.age)    
+  // push voter back to voter queue while http call fails?
+  var json = voter_http(payload, creds)
+  
+  return
 }
 
-
-function batch_get_voter_arguments() {
-  // get upvoted
-  var ups = get_upvoted(30)
-  
-  for(var i=0; i<ups.length; i++) {
-    var obj = ups[i]
-    
-    set_argument(ARG_QUEUE_UP, obj)
-  }
-  
-  // get downvoted
+// 1 day = 1440 minutes / 5 minutes = 288 times
+// 30(up+down) * 6 users * 5 minutes = 900 minutes
+function batch_set_arg_queue() {
+  // get upvoted & downvoted
+  var ups = get_upvoted(20)
   var downs = get_downvoted(10)
-    
-  for(var i=0; i<downs.length; i++) {
-    var obj = downs[i]
-    
-    set_argument(ARG_QUEUE_DOWN, obj)
+  var updowns = []
+  
+  for(var i in ups) {
+    updowns.push(ups[i])
   }
+  
+  for(var i in downs) {
+    updowns.push(downs[i])
+  }
+  
+  for(var i=0; i<updowns.length; i++) {
+    voter_obj.age = updowns[i].age
+    if(voter_obj.age > ARCHIVED_AGE) {
+      continue  
+    }
+    voter_obj.name = updowns[i].name
+    
+    if(i < ups.length) { 
+      voter_obj.dir = "1"
+    } else {
+      voter_obj.dir = "-1"
+    }
+      
+    voter_obj.title = updowns[i].title.slice(0,15)
+    
+    set_arg_queue(voter_obj)
+  }
+  
 }

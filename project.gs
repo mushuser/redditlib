@@ -12,6 +12,14 @@ var GD_FOLDER_ID;
 var ACCESS_TOKEN;
 var FLAIR_MAPPING;
 
+var voter_obj = {
+  name:undefined,
+  dir:undefined,
+  age:undefined,
+  title:undefined,
+  voter:[]
+} 
+
 function init_project(sr, creds, creds_voters, folder_id, flair_mapping) {
   SUBREDDIT = sr
   credential.username = creds.username
@@ -20,6 +28,9 @@ function init_project(sr, creds, creds_voters, folder_id, flair_mapping) {
   credential.refresh_token = creds.refresh_token
   
   credential_voters = creds_voters
+  for(var i in credential_voters) {
+    voter_obj.voter.push(credential_voters[i].username)
+  }
   
   GD_FOLDER_ID = folder_id
   FLAIR_MAPPING = flair_mapping

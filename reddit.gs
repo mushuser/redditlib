@@ -296,16 +296,17 @@ function get_objects(reads, ifcheck) {
   for(var i=0; i<reads.length; i++) {
     var data = reads[i].data
     var kind_read = reads[i].kind
-    var age = get_age(data.created_utc)
-
+    
     var kind = get_kind(data.name)
-   
+    
     if(kind == "t1") {
       var parent_name = data.parent_id // name
       var parent = get_parent(parent_name)
       var flair = parent.link_flair_text
       var title = get_escaped_title(data.link_title + "(回覆)")
-    } else if(kind == "t3") {
+      var age = get_age(parent.created_utc)
+      } else if(kind == "t3") {
+      var age = get_age(data.created_utc)
       var flair = data.link_flair_text // t3 only
       var title = get_escaped_title(data.title)
     }
@@ -477,26 +478,16 @@ function vote_thing(obj, dir) {
   return true //?
 }
 
-function voter_vote(obj, dir) {
-  if(obj.age > ARCHIVED_AGE) {
-    return false
-  }
-  
-  var api_path = api.vote  
-  
-  var payload = {
-    "id":obj.name,
-    "dir":dir
-  }
-  
+function get_voter_creds(username) {
   for(var i in credential_voters) {
-    var c = credential_voters[i]
-    var json = voter_http(api_path, payload, c)
-  }
+    var un = credential_voters[i].username
+    if(un == username) {
+      return credential_voters[i]
+    }
+  }  
   
-  return true
+  return undefined
 }
-
 
 //
 function get_comments(listing_max) {
@@ -504,6 +495,17 @@ function get_comments(listing_max) {
   var reads = rddt_http(api_path, undefined, listing_max)    
  
   return reads  
+}
+
+function get_names_fr_voter(objs) {
+  var names = []
+  
+  for(var i in objs) {
+    var name = objs[i].name
+    names.push(name)
+  }
+  
+  return names
 }
 
 //
@@ -516,4 +518,70 @@ function get_names_fr_obj(objs) {
   }
   
   return names  
+}
+
+// true, false, null
+function get_voter_likes(name, username) {
+  var api_path = api.info_f(name)  
+  var mute = false
+  
+  var creds = get_voter_creds(username)
+  var headers = {
+    "Authorization":get_bearer(creds)
+  }     
+  
+  var options = {
+    "headers":headers,
+    "muteHttpExceptions":mute
+  }
+  
+  var response = httpretry(api_path, options)
+  
+  var text = response.getContentText()
+  var json = JSON.parse(text)     
+  var likes = json.data.children[0].data.likes
+  
+  return likes
+}
+
+function get_likes_fr_dir(likes) {
+  var dir;
+  
+  if(likes == true) {
+    dir = "1"  
+  } else if(likes == false) {
+    dir = "-1" 
+  } else if( likes == null) {
+    dir = "0"
+  }
+  
+  return dir
+}
+
+function get_dir_fr_likes(dir) {
+  var likes;
+  
+  if(dir == "1") {
+    likes = true
+  } else if(dir == "-1") {
+    likes = false 
+  } else if( dir == "0") {
+    likes = null
+  }
+  
+  return likes
+}
+
+
+function get_created_utc_age(name) {
+  if(name.indexOf("t1_") > -1) {
+    var data = get_parent(name)
+  } else if(name.indexOf("t3_") > -1) {
+    var data = get_info(name).data
+  }
+  
+  var created_utc = data.created_utc
+  var age = get_age(created_utc)
+  
+  return age
 }

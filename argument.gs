@@ -1,12 +1,78 @@
 // argument queue
 // enqueue/dequeue
-var ARG_QUEUE_UP="ARG_QUEUE_UP"
-var ARG_QUEUE_DOWN="ARG_QUEUE_DOWN"
+var ARG_QUEUE="ARG_QUEUE"
 var ARG_DELIM=";"
+var VOTER_QUEUE="VOTER_QUEUE"
 
-function get_argument(ARG_TYPE) {
+
+function copy_voter(from,to) {
+  for(var f in from) {
+    to[f] = from[f]   
+  }
+}
+  
+
+function get_voter_queue() {
   var pro = PropertiesService.getScriptProperties()
-  var current_arg_s = pro.getProperty(ARG_TYPE)
+  var current_arg_s = pro.getProperty(VOTER_QUEUE)
+  
+  // voter_queue is empty, get one from arg queue
+  if((current_arg_s == null) || (current_arg_s == "")) {
+    var obj = get_arg_queue()
+
+    if(obj != undefined) {
+      set_voter_queue(obj)
+      return get_voter_queue()
+    } else {
+      return undefined
+    }
+  }
+
+  var current_arg_o = JSON.parse(current_arg_s)
+  if(current_arg_o.voter.length < 1) {
+    set_voter_queue({})    
+    return get_voter_queue() 
+  }
+
+  var new_arg_o = {}
+  copy_voter(current_arg_o, new_arg_o)
+  
+  current_arg_o.voter = current_arg_o.voter.split(ARG_DELIM)
+  new_arg_o.voter = current_arg_o.voter[0] 
+  current_arg_o.voter = current_arg_o.voter.slice(1)
+  
+  // clean voter queue while voter is empty
+  if((current_arg_o.voter.length == 1) && (current_arg_o.voter[0] == undefined)) {
+    set_voter_queue({})
+  } else {    
+    current_arg_o.voter = current_arg_o.voter.join(ARG_DELIM)
+    var current_arg_s = JSON.stringify(current_arg_o)
+    pro.setProperty(VOTER_QUEUE, current_arg_s)
+  }
+  
+  return new_arg_o
+}
+
+
+function set_voter_queue(obj) {
+  var pro = PropertiesService.getScriptProperties()
+  
+  if(obj.hasOwnProperty("voter")) {
+    var new_obj = obj
+    new_obj.voter = new_obj.voter.join(ARG_DELIM)
+    var new_obj_s = JSON.stringify(new_obj)
+    pro.setProperty(VOTER_QUEUE, new_obj_s)    
+  } else {
+    pro.setProperty(VOTER_QUEUE, "")  
+  }
+  
+  return true
+}
+
+
+function get_arg_queue() {
+  var pro = PropertiesService.getScriptProperties()
+  var current_arg_s = pro.getProperty(ARG_QUEUE)
   
   if((current_arg_s == null) || (current_arg_s == "")) {
     return undefined
@@ -15,14 +81,14 @@ function get_argument(ARG_TYPE) {
   var current_arg_l = current_arg_s.split(ARG_DELIM)
   var arg_o = JSON.parse(current_arg_l[0])
   var new_arg_s = current_arg_l.slice(1).join(ARG_DELIM)
-  pro.setProperty(ARG_TYPE, new_arg_s)
+  pro.setProperty(ARG_QUEUE, new_arg_s)
   
   return arg_o
 }
 
-function set_argument(ARG_TYPE, obj) {
+function set_arg_queue(obj) {
   var pro = PropertiesService.getScriptProperties()
-  var current_arg_s = pro.getProperty(ARG_TYPE)
+  var current_arg_s = pro.getProperty(ARG_QUEUE)
   
   if((current_arg_s == null) || (current_arg_s == "")) {
     var new_arg_s = JSON.stringify(obj)
@@ -30,7 +96,7 @@ function set_argument(ARG_TYPE, obj) {
     var new_arg_s = current_arg_s + ARG_DELIM + JSON.stringify(obj)
   }
   
-  pro.setProperty(ARG_TYPE, new_arg_s)
+  pro.setProperty(ARG_QUEUE, new_arg_s)
   
   return new_arg_s
 }

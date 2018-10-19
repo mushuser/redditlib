@@ -1,6 +1,7 @@
 var httpretries = 3 
 
-function voter_http(api_path, payload, creds) {
+function voter_http(payload, creds) {
+  var api_path = api.vote    
   var mute = false
   
   var headers = {
