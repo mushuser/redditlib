@@ -5,12 +5,16 @@ var credential = {
   refresh_token:undefined  
 }
 
+
 var credential_voters = undefined
 
+
 var SUBREDDIT;
+var SECRET_SR;
 var GD_FOLDER_ID;
 var ACCESS_TOKEN;
 var FLAIR_MAPPING;
+
 
 var voter_obj = {
   name:undefined,
@@ -20,8 +24,10 @@ var voter_obj = {
   voter:[]
 } 
 
-function init_project(sr, creds, creds_voters, folder_id, flair_mapping) {
+
+function init_project(sr, secret_sr, creds, creds_voters, folder_id, flair_mapping) {
   SUBREDDIT = sr
+  SECRET_SR = secret_sr
   credential.username = creds.username
   credential.client_id = creds.client_id
   credential.secret = creds.secret
@@ -36,9 +42,11 @@ function init_project(sr, creds, creds_voters, folder_id, flair_mapping) {
   FLAIR_MAPPING = flair_mapping
 }
 
+
 function check_init() {
   if(
     (SUBREDDIT == undefined) || 
+    (SECRET_SR == undefined) || 
     (credential.username == undefined) ||
     (credential.client_id == undefined) ||
     (credential.secret == undefined) ||
@@ -51,5 +59,6 @@ function check_init() {
     throw msg  
   }  
 }
+
 
 var script_pro = PropertiesService.getScriptProperties()

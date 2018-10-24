@@ -1,35 +1,13 @@
 var httpretries = 3 
 
-function voter_http(payload, creds) {
-  var api_path = api.vote    
-  var mute = false
-  
-  var headers = {
-    "Authorization":get_bearer(creds)
-  }     
-  
-  var options = {
-    "headers":headers,
-    "payload":payload,
-    "muteHttpExceptions":mute
-  }
-  
-  var response = httpretry(api_path, options)
-  
-  var text = response.getContentText()
-  var json = JSON.parse(text)     
-  
-  return json
-}
-
 //
-function rddt_http(api_path, payload, listing_max) {
+function rddt_http(api_path, payload, listing_max, creds) {
   var options;
   var mute = false
   
   if( isOauth(api_path) ) {
     var headers = {
-      "Authorization":get_bearer()
+      "Authorization":get_bearer(creds)
     }     
     
     options = {
@@ -153,10 +131,12 @@ function httpretry(url, options, ifNthrow) {
       if( i >= httpretries ) {
         if(ifNthrow == true) {
           console.log(e)
+          return undefined
         } else {
           throw_print(e)
         }
-      }    
+      }
+      
     }
   }  
 }

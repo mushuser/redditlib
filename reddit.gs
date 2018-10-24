@@ -8,6 +8,8 @@ var api = {
   compose: "https://oauth.reddit.com/api/compose.json",
   vote: "https://oauth.reddit.com/api/vote.json",
   editusertext: "https://oauth.reddit.com/api/editusertext.json",
+  comment: "https://oauth.reddit.com/api/comment.json",
+  submit: "https://oauth.reddit.com/api/submit.json",
   info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
@@ -16,6 +18,7 @@ var api = {
   wiki_edit_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/api/wiki/edit.json"},
   wiki_page_f: function(sr, wiki){return "https://www.reddit.com/r/"+sr+"/wiki"+wiki+".json"},
   comments_sr_f: function(sr){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100"},
+  comments_sr_oauth_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/new.json?limit=100"},  
   comments_sr_after_f: function(sr,after){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100&after="+after},  
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
@@ -154,9 +157,9 @@ var code = {
 }
 
 //
-function get_info(name) {
+function get_info(name, creds) {
   var api_path = api.info_f(name)
-  var read = rddt_http(api_path)
+  var read = rddt_http(api_path, undefined, undefined, creds)
 
   return read.data.children[0] //safe
 }

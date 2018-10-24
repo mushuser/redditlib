@@ -120,13 +120,21 @@ function batch_add_goodposts() {
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
       up_vote(s)
-      //save_json_gd(s.name)
+      
+      var o = to_voter_obj(s, "1")
+      set_arg_queue(o)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
       clean_vote(s)
+      
+      var o = to_voter_obj(s, "0")
+      set_arg_queue(o)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
       up_vote(s)
+      
+      var o = to_voter_obj(s, "1")
+      set_arg_queue(o)
     } else if(r == code.ADDPOST_EMPTY) {
       console.info("empty page") 
     }
@@ -168,7 +176,8 @@ function batch_voter_vote() {
   
   console.log("voter:%s:%s:%s:%s:%d", obj.title, obj.dir, obj.name, obj.voter, obj.age)    
   // push voter back to voter queue while http call fails?
-  var json = voter_http(payload, creds)
+  var api_path = api.vote 
+  var json = rddt_http(api_path, payload, undefined, creds)
   
   return
 }

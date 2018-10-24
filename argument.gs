@@ -75,6 +75,7 @@ function get_arg_queue() {
   var current_arg_s = pro.getProperty(ARG_QUEUE)
   
   if((current_arg_s == null) || (current_arg_s == "")) {
+//    console.log("ARG_QUEUE is empty")
     return undefined
   }
   
@@ -96,6 +97,7 @@ function set_arg_queue(obj) {
     var new_arg_s = current_arg_s + ARG_DELIM + JSON.stringify(obj)
   }
   
+//  console.log("added to ARG_QUEUE:%s", obj)
   pro.setProperty(ARG_QUEUE, new_arg_s)
   
   return new_arg_s
@@ -114,4 +116,13 @@ function clean_argument(ARG_TYPE) {
   var current_arg_s = pro.setProperty(ARG_TYPE,"")
   
   return current_arg_s
+}
+
+function to_voter_obj(obj, dir) {
+  voter_obj.name = obj.name
+  voter_obj.dir = dir
+  voter_obj.title = obj.title
+  voter_obj.age = get_age(obj.created_utf)
+
+  return voter_obj  
 }
