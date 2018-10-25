@@ -64,7 +64,7 @@ function post_quotes(sr) {
   var r = post_to_sr(sr, title, "", username)
   
   console.log(r)
-  console.log("post_quotes():%s:%s:%s:%s:%s", sr, title, text, username, r.json.data.url)
+  console.log("post_quotes():%s:%s:%s:%s", sr, title, username, r.json.data.url)
 
   return r  
 }
