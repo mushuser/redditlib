@@ -167,7 +167,7 @@ function reply_any() {
 function upvote_any() {  
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
-  var name = get_any_thing(creds)
+  var name = get_any_thing_t3(creds)
   var obj = get_info(name, creds)
   var data = obj.data
   
@@ -219,6 +219,23 @@ function get_any_thing(creds) {
   var name = get_random(names)
   
   return name
+}
+
+
+function get_any_thing_t3(creds) {
+  var names = get_secret_thing_t3(creds)
+  var name = get_random(names)
+  
+  return name
+}
+
+
+function get_secret_thing_t3(creds) {
+  var sr = SECRET_SR
+  var reads = get_comments_oauth(25, sr, creds)
+  var t3_names = get_names_fr_obj(reads)
+
+  return t3_names  
 }
 
 
