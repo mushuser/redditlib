@@ -94,7 +94,7 @@ function set_arg_queue(obj) {
   if((current_arg_s == null) || (current_arg_s == "")) {
     var new_arg_s = JSON.stringify(obj)
   } else {
-    var new_arg_s = current_arg_s + ARG_DELIM + JSON.stringify(obj)
+    var new_arg_s = JSON.stringify(obj) + ARG_DELIM + current_arg_s
   }
   
 //  console.log("added to ARG_QUEUE:%s", obj)

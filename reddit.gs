@@ -10,6 +10,7 @@ var api = {
   editusertext: "https://oauth.reddit.com/api/editusertext.json",
   comment: "https://oauth.reddit.com/api/comment.json",
   submit: "https://oauth.reddit.com/api/submit.json",
+  user_about_f: function(username){return "https://www.reddit.com/user/"+username+"/about.json"},
   info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
@@ -587,4 +588,27 @@ function get_created_utc_age(name) {
   var age = get_age(created_utc)
   
   return age
+}
+
+
+function get_user_about(username) {
+  var api_path = api.user_about_f(username)
+  var reads = rddt_http(api_path)    
+  
+  return reads
+}
+
+
+function get_voters_karma() {
+  var users = voter_obj.voter
+  var karmas = []
+
+  for(var i in users) {
+    var about = get_user_about(users[i])
+    var karma = about.data.link_karma
+    karmas.push(karma)
+//    Logger.log(users[i]+":"+karma)
+  }
+  
+  return karmas
 }
