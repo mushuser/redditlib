@@ -61,8 +61,8 @@ function post_quotes(sr) {
   
   var r = post_to_sr(sr, title, "", username)
   
+  console.log(r)
   console.log("post_quotes():%s:%s:%s:%s:%s", sr, title, text, username, r.json.data.url)
-//  console.log(r)
 
   return r  
 }
@@ -76,8 +76,8 @@ function post_to_test() {
   var sr = "test"
   var r = post_to_sr(sr, title, text, username)
   
+  console.log("%s", r)
   console.log("%s:%s:%s:%s", title, text, username, r.json.data.url)
-//  console.log("%s", r)
   
   return url
 }
@@ -187,6 +187,7 @@ function get_any_thing(creds) {
   return name
 }
 
+
 function get_secret_thing(creds) {
   var sr = SECRET_SR
   var reads = get_comments_oauth(25, sr, creds)
@@ -208,4 +209,48 @@ function get_secret_thing(creds) {
   }
    
   return names
+}
+
+
+function get_current_karmas() {
+  var users = voter_obj.voter
+  var karmas = []
+
+  for(var i in users) {
+    var about = get_user_about(users[i])
+    var karma = about.data.link_karma
+    karmas.push(karma)
+  }
+  
+  return karmas
+}
+
+
+function get_karmas_delta(current_karmas) {
+  var saved_karmas = get_saved_karma()
+  var deltas = []
+  
+  for(var i in current_karmas) {
+      var delta = current_karmas[i] - saved_karmas[i]
+      deltas.push(delta)
+  }
+  
+  return deltas
+}
+
+
+function update_karmas() {
+  var current_karmas = get_current_karmas()
+  var deltas = get_karmas_delta(current_karmas)
+  set_saved_karma(current_karmas)
+  
+  var msg = ""
+  
+  for(var i in voter_obj.voter) {
+    var msg = msg + voter_obj.voter[i] + "(" + current_karmas[i] + ")" + ":" + deltas[i] + ","
+  }                        
+                         
+  console.log("karma delta:%s", msg)
+  
+  return deltas
 }

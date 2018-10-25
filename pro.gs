@@ -129,14 +129,14 @@ function to_voter_obj(obj, dir) {
 }
 
 
-function set_voters_karma(karmas) {
+function set_saved_karma(karmas) {
   var karma_string = karmas.join(ARG_DELIM)
   var pro = PropertiesService.getScriptProperties()
   pro.setProperty(VOTER_KARMA, karma_string)
 }
 
 
-function get_voters_karma() {
+function get_saved_karma() {
   var pro = PropertiesService.getScriptProperties()
   var karma_string = pro.getProperty(VOTER_KARMA)
   if(karma_string == null) {

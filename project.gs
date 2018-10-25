@@ -32,8 +32,8 @@ function init_project(sr, secret_sr, creds, creds_voters, folder_id, flair_mappi
   credential.client_id = creds.client_id
   credential.secret = creds.secret
   credential.refresh_token = creds.refresh_token
-  
   credential_voters = creds_voters
+  
   for(var i in credential_voters) {
     voter_obj.voter.push(credential_voters[i].username)
   }
