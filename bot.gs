@@ -100,12 +100,46 @@ function post_to_sr(sr, title, text, username) {
 }
 
 
-function get_random_quote() {
+function get_quote_talaikis() {
   var url = "https://talaikis.com/api/quotes/random/"
 
   var response = JSON.parse(httpretry(url))
 
   return response  
+}
+
+
+function get_quote_andruxnet() {
+  var url = "https://andruxnet-random-famous-quotes.p.mashape.com/?count=1"
+  
+  var key = "hOr6Cu18FwmshduhpHAIjxJRV5hxp13jxITjsn5OXVINNEpBAy"
+  
+  var headers = {
+    "X-Mashape-Key":key,
+    "Accept":"application/json"    
+  }
+
+  var options = {
+    "headers":headers,
+    "muteHttpExceptions":false
+  }      
+  
+  var response = JSON.parse(httpretry(url, options))[0]
+
+  return response
+}
+
+
+function get_random_quote() {
+  var choice = NOW % 2
+  
+  if(choice == 0) {
+    var result = get_quote_talaikis()
+  } else {
+    var result = get_quote_andruxnet()
+  }
+  
+  return result
 }
 
 
