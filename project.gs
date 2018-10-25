@@ -59,6 +59,3 @@ function check_init() {
     throw msg  
   }  
 }
-
-
-var script_pro = PropertiesService.getScriptProperties()

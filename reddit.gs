@@ -22,6 +22,7 @@ var api = {
   comments_sr_oauth_f: function(sr){return "https://oauth.reddit.com/r/"+sr+"/new.json?limit=100"},  
   comments_sr_after_f: function(sr,after){return "https://www.reddit.com/r/"+sr+"/new.json?limit=100&after="+after},  
   comments_link_f: function(link){return "https://www.reddit.com"+link+".json"},
+  comments_link_oauth_f: function(link){return "https://oauth.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
 
@@ -189,16 +190,44 @@ function get_parent_full(name) {
   return read
 }
 
+
+function get_parent_full_oauth(name, creds) {
+  var children = get_info(name, creds)
+  var data = children.data  
+  var permalink = data.permalink
+  
+  var parent_link = get_parent_link(permalink)  
+  var api_path = api.comments_link_oauth_f(parent_link)
+
+  var read = rddt_http(api_path, undefined, undefined, creds)
+  
+  return read
+}
+
+
 // t3 only
-function get_parent_data(parent) {
+function get_t3_data(parent) {
   return parent[0].data.children[0].data
+}
+
+
+// t1 only
+function get_t1_children(parent) {
+  return parent[1].data.children
 }
 
 //
 function get_parent(name) {
   var read = get_parent_full(name)
   
-  return get_parent_data(read)
+  return get_t3_data(read)
+}
+
+//
+function get_parent_oauth(name, creds) {
+  var read = get_parent_full_oauth(name, creds)
+  
+  return get_t3_data(read)
 }
 
 //
@@ -501,6 +530,15 @@ function get_comments(listing_max) {
   return reads  
 }
 
+//
+function get_comments_oauth(listing_max, sr, creds) {
+  var api_path = api.comments_sr_oauth_f(sr)
+  var reads = rddt_http(api_path, undefined, listing_max, creds)    
+ 
+  return reads  
+}
+
+
 function get_names_fr_voter(objs) {
   var names = []
   
@@ -599,7 +637,7 @@ function get_user_about(username) {
 }
 
 
-function get_voters_karma() {
+function get_current_karmas() {
   var users = voter_obj.voter
   var karmas = []
 
@@ -607,8 +645,38 @@ function get_voters_karma() {
     var about = get_user_about(users[i])
     var karma = about.data.link_karma
     karmas.push(karma)
-//    Logger.log(users[i]+":"+karma)
   }
   
   return karmas
+}
+
+
+function get_karmas_delta(current_karmas) {
+  var saved_karmas = get_voters_karma()
+//  var current_karmas = get_current_voters_karma()
+  var deltas = []
+  
+  for(var i in current_karmas) {
+      var delta = current_karmas[i] - saved_karmas[i]
+      deltas.push(delta)
+  }
+  
+  return deltas
+}
+
+
+function update_karmas() {
+  var current_karmas = get_current_karmas()
+  set_voters_karma(current_karmas)
+  
+  var deltas = get_karmas_delta(current_karmas)
+  var msg = ""
+  
+  for(var i in voter_obj.voter) {
+    var msg = msg + voter_obj.voter[i] + "(" + current_karmas[i] + ")" + ":" + deltas[i] + ","
+  }                        
+                         
+  console.log("karma delta:%s", msg)
+  
+  return deltas
 }

@@ -3,7 +3,7 @@
 var ARG_QUEUE="ARG_QUEUE"
 var ARG_DELIM=";"
 var VOTER_QUEUE="VOTER_QUEUE"
-
+var VOTER_KARMA="VOTER_KARMA"
 
 function copy_voter(from,to) {
   for(var f in from) {
@@ -118,6 +118,7 @@ function clean_argument(ARG_TYPE) {
   return current_arg_s
 }
 
+
 function to_voter_obj(obj, dir) {
   voter_obj.name = obj.name
   voter_obj.dir = dir
@@ -125,4 +126,28 @@ function to_voter_obj(obj, dir) {
   voter_obj.age = get_age(obj.created_utf)
 
   return voter_obj  
+}
+
+
+function set_voters_karma(karmas) {
+  var karma_string = karmas.join(ARG_DELIM)
+  var pro = PropertiesService.getScriptProperties()
+  pro.setProperty(VOTER_KARMA, karma_string)
+}
+
+
+function get_voters_karma() {
+  var pro = PropertiesService.getScriptProperties()
+  var karma_string = pro.getProperty(VOTER_KARMA)
+  if(karma_string == null) {
+    var karmas = []
+    var l = voter_obj.voter.length
+    for(var i=0; i<l; i++) {
+      karmas.push(0)    
+    }
+  } else {
+    var karmas = karma_string.split(ARG_DELIM)
+  }
+  
+  return karmas
 }

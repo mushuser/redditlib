@@ -61,7 +61,7 @@ function post_quotes(sr) {
   
   var r = post_to_sr(sr, title, "", username)
   
-  console.log("%s:%s:%s:%s", title, text, username, r.json.data.url)
+  console.log("post_quotes():%s:%s:%s:%s:%s", sr, title, text, username, r.json.data.url)
 //  console.log(r)
 
   return r  
@@ -109,53 +109,45 @@ function get_random_quote() {
 }
 
 
-function get_any_reply() {
-  
-}
-
-
-function get_any_comment(creds) {
-  var sr = SECRET_SR
-  var api_path = api.comments_sr_oauth_f(sr)
-  var reads = rddt_http(api_path, undefined, 25, creds)
-  
-  var names = get_names_fr_obj(reads)
-  var name = get_random(names)
-  
-  return name
-  
-}
-
 function reply_any() {
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
-  var name = get_any_comment(creds)
+  var name = get_any_thing(creds)
   var text = get_random(reply_words)
   
   var payload = {
+    "api_type":"json",
     "thing_id":name,
     "text":text
   }
   
   var api_path = api.comment
   var reads = rddt_http(api_path, payload, undefined, creds)  
+  var data = reads.json.data.things[0].data
+  var permalink = data.permalink
   
-  Logger.log(reads)
+  console.log("reply_any():%s:%s:%s", username, text, permalink)
 }
 
 
 function upvote_any() {  
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
+  var name = get_any_thing(creds)
+  var obj = get_info(name, creds)
+  var data = obj.data
   
-  var name = get_any_comment()  
-  var obj = get_info(name, creds).data
+  var likes = data.likes
   
-  var likes = obj.likes
-  var title = obj.title.slice(0,15)
-      
+  if(obj.kind == "t1") {
+    var parent = get_parent_oauth(name, creds)
+    var title = parent.title.slice(0,15)
+  } else {
+    var title = data.title.slice(0,15)
+  }
+  
   if(likes == true) {
-    console.log("skipped vote:%s:%s:%s:%s", title, obj.like, obj.name, username)    
+    console.log("upvote_any() skipped:%s:%s:%s:%s", title, data.like, data.name, username)    
     return  
   }
   
@@ -164,8 +156,56 @@ function upvote_any() {
     "dir":"1"
   }
   
-  console.log("vote up:%s:%s:%s:%s", title, obj.likes, obj.name, username)    
+  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
   // push voter back to voter queue while http call fails?
   var api_path = api.vote 
   var reads = rddt_http(api_path, payload, undefined, creds)
+}
+
+
+function get_secret_comments(creds) {
+  var sr = SECRET_SR
+  var reads = get_comments_oauth(25, sr, creds)
+
+  return reads  
+}
+
+
+function get_any_comment(creds) {
+  var reads = get_secret_comments(creds)
+  var names = get_names_fr_obj(reads)
+  var name = get_random(names)
+  
+  return name
+}
+
+
+function get_any_thing(creds) {
+  var names = get_secret_thing(creds)
+  var name = get_random(names)
+  
+  return name
+}
+
+function get_secret_thing(creds) {
+  var sr = SECRET_SR
+  var reads = get_comments_oauth(25, sr, creds)
+  var t3_names = get_names_fr_obj(reads)
+
+  var names = []
+  
+  for(var i in t3_names) {
+    var t3_name = t3_names[i]
+    names.push(t3_name)
+    
+    var parent = get_parent_full_oauth(t3_name, creds)
+    var childs = get_t1_children(parent)
+
+    for(var i2 in childs) {
+      var name = childs[i2].data.name
+      names.push(name)
+    }
+  }
+   
+  return names
 }

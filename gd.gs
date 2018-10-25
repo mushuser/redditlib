@@ -3,7 +3,7 @@ var WAIT_DAYS = 2
 // return fileName or undefined
 function save_json_gd(name) {
   var parent = get_parent_full(name)
-  var data = get_parent_data(parent)
+  var data = get_t3_data(parent)
   var age = get_age(data.created_utc)
   var title = data.title
   
