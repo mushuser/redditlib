@@ -44,11 +44,13 @@ var reply_words = [
 
 function post_to_quotes() {
   post_quotes("quotes")
+  return
 }
 
 
 function post_to_secret_sr() {
   post_quotes(SECRET_SR)
+  return
 }
 
 
@@ -133,7 +135,7 @@ function get_quote_andruxnet() {
 function get_random_quote() {
   var choice = NOW % 2
   
-  if(choice == 0) {
+  if(true) {
     var result = get_quote_talaikis()
   } else {
     var result = get_quote_andruxnet()
@@ -159,15 +161,21 @@ function reply_any() {
   var reads = rddt_http(api_path, payload, undefined, creds)  
   var data = reads.json.data.things[0].data
   var permalink = data.permalink
-  
-  console.log("reply_any():%s:%s:%s", username, text, permalink)
+//  console.log("reply_any():%s:%s:%s", username, text, permalink)
+  return
 }
 
 
-function upvote_any() {  
+function upvote_any(type) {  
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
-  var name = get_any_thing_t3(creds)
+  
+  if(type == "t3") {
+    var name = get_any_t3(creds)
+  } else {
+    var name = get_any_thing(creds)
+  }
+  
   var obj = get_info(name, creds)
   var data = obj.data
   
@@ -181,7 +189,7 @@ function upvote_any() {
   }
   
   if(likes == true) {
-    console.log("upvote_any() skipped:%s:%s:%s:%s", title, data.like, data.name, username)    
+//    console.log("upvote_any() skipped:%s:%s:%s:%s", title, data.like, data.name, username)    
     return  
   }
   
@@ -190,10 +198,12 @@ function upvote_any() {
     "dir":"1"
   }
   
-  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
+//  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
   // push voter back to voter queue while http call fails?
   var api_path = api.vote 
   var reads = rddt_http(api_path, payload, undefined, creds)
+  
+  return
 }
 
 
@@ -222,15 +232,15 @@ function get_any_thing(creds) {
 }
 
 
-function get_any_thing_t3(creds) {
-  var names = get_secret_thing_t3(creds)
+function get_any_t3(creds) {
+  var names = get_secret_t3(creds)
   var name = get_random(names)
   
   return name
 }
 
 
-function get_secret_thing_t3(creds) {
+function get_secret_t3(creds) {
   var sr = SECRET_SR
   var reads = get_comments_oauth(25, sr, creds)
   var t3_names = get_names_fr_obj(reads)
