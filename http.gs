@@ -69,6 +69,10 @@ function get_bearer(creds) {
     creds = credential
   }
   
+  if((creds.username == credential.username) && (ACCESS_TOKEN != undefined)) {
+    return get_bearerauth(ACCESS_TOKEN)
+  }
+  
   var basic_auth = get_basicauth(
     creds.client_id, 
     creds.secret)
@@ -76,41 +80,37 @@ function get_bearer(creds) {
   var access_token = get_accesstoken(
     basic_auth,
     creds.refresh_token
-  ) 
-
+  )
+ 
   return get_bearerauth(access_token)
 }
 
 
 function get_accesstoken(basic_auth, refresh_token) {
-  if(ACCESS_TOKEN) {
-    return ACCESS_TOKEN
-  } else {
-    var url = "https://www.reddit.com/api/v1/access_token"
-    
-    var headers = {
-      "Authorization":basic_auth
-    }
-    
-    var payload = {
-      "grant_type":"refresh_token",
-      "refresh_token":refresh_token,    
-    }
-    
-    var options = {
-      "headers":headers,
-      "method":"post",
-      "payload":payload
-    }
-    
-    var response = httpretry(url, options)
-    
-    var text = response.getContentText()
-    var json = JSON.parse(text)
-    var access_token = json.access_token
-    
-    return access_token
+  var url = "https://www.reddit.com/api/v1/access_token"
+  
+  var headers = {
+    "Authorization":basic_auth
   }
+  
+  var payload = {
+    "grant_type":"refresh_token",
+    "refresh_token":refresh_token,    
+  }
+  
+  var options = {
+    "headers":headers,
+    "method":"post",
+    "payload":payload
+  }
+  
+  var response = httpretry(url, options)
+  
+  var text = response.getContentText()
+  var json = JSON.parse(text)
+  var access_token = json.access_token
+  
+  return access_token
 }
 
 //

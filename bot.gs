@@ -161,7 +161,9 @@ function reply_any() {
   var reads = rddt_http(api_path, payload, undefined, creds)  
   var data = reads.json.data.things[0].data
   var permalink = data.permalink
-//  console.log("reply_any():%s:%s:%s", username, text, permalink)
+  
+  console.log("reply_any():%s:%s:%s", username, text, permalink)
+  
   return
 }
 
@@ -189,7 +191,7 @@ function upvote_any(type) {
   }
   
   if(likes == true) {
-//    console.log("upvote_any() skipped:%s:%s:%s:%s", title, data.like, data.name, username)    
+    console.log("upvote_any() skipped:%s:%s:%s:%s:%s", obj.kind, title, data.likes, data.name, username)    
     return  
   }
   
@@ -198,7 +200,7 @@ function upvote_any(type) {
     "dir":"1"
   }
   
-  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
+  console.log("upvote_any():%s:%s:%s:%s:%s", obj.kind, title, data.likes, data.name, username)    
   // push voter back to voter queue while http call fails?
   var api_path = api.vote 
   var reads = rddt_http(api_path, payload, undefined, creds)
