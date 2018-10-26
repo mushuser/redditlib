@@ -19,8 +19,8 @@ function batch_del_old_comments() {
     if((age >= MIN_AGE) && (age < MAX_AGE) && (likes == null)) {
       save_json_gd(name)
             
-      var rr = del_thing(name)      
-      if(rr) {
+      var r = del_thing(name)      
+      if(r) {
         console.info("deleted:%s",msg)            
       } else {
         console.info("not deleted:%s",msg)            
@@ -206,5 +206,14 @@ function batch_set_arg_queue() {
       
     voter_obj.title = updowns[i].title.slice(0,15)    
     set_arg_queue(voter_obj)
+  }
+}
+
+// untested
+function batch_del_message_fr_voter() {
+  var voters = voter_obj.voter
+  
+  for(var i in voters) {
+    del_message_fr_voter(voters[i]) 
   }
 }

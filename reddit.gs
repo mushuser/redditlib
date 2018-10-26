@@ -5,11 +5,13 @@ var api = {
   save: "https://oauth.reddit.com/api/save.json",
   unsave: "https://oauth.reddit.com/api/unsave.json",
   del: "https://oauth.reddit.com/api/del.json",
+  del_msg: "https://oauth.reddit.com/api/del_msg.json",
   compose: "https://oauth.reddit.com/api/compose.json",
   vote: "https://oauth.reddit.com/api/vote.json",
   editusertext: "https://oauth.reddit.com/api/editusertext.json",
   comment: "https://oauth.reddit.com/api/comment.json",
   submit: "https://oauth.reddit.com/api/submit.json",
+  inbox: "https://oauth.reddit.com/message/inbox.json",
   user_about_f: function(username){return "https://www.reddit.com/user/"+username+"/about.json"},
   info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
@@ -430,25 +432,29 @@ function get_escaped_body(body) {
 }
 
 //
-function get_author(name) {
-  var data = get_info(name).data
+function get_author(name, creds) {
+  var info = get_info(name, creds)
+  var data = info.data
   var author = data.author
   
   return author  
 }
 
 //
-function del_thing(name) {
-  var author = get_author(name)
-  if(author != credential.username) {
-    return false  
-  }
+function del_thing(name, creds) {
+//  var author = get_author(name, creds)
+  
+//  if(author != credential.username) {
+//    return false  
+//  }
      
   var api_path = api.del
   var payload = {
     "id":name
   }
-  var reads = rddt_http(api_path, payload)
+
+  var reads = rddt_http(api_path, payload, undefined, creds)
+
   return true    
 }
 
@@ -632,6 +638,52 @@ function get_created_utc_age(name) {
 function get_user_about(username) {
   var api_path = api.user_about_f(username)
   var reads = rddt_http(api_path)    
+  
+  return reads
+}
+
+
+function del_message_fr_voter(username) {
+  var creds = get_voter_creds(username)
+  var inboxs = get_inbox(creds)
+  
+  var voters = voter_obj.voter
+  
+  for(var i in inboxs) {
+    var data = inboxs[i].data
+    if(data) {
+      var name = data.name
+      var author = data.author
+
+      if(voters.indexOf(author) > -1) {
+        var r = del_msg(name, creds)
+        Logger.log(r)
+        if(r) {
+          console.log("deleted:%s:%s", name, author)
+        }
+      }  
+    }
+  }
+}
+
+
+function get_inbox(creds) {
+ var api_path = api.inbox 
+ var reads = rddt_http(api_path, undefined, undefined, creds)     
+ var children = reads.data.children
+ 
+ return children
+}
+
+
+function del_msg(name, creds) {
+  var api_path = api.del_msg
+
+  var payload = {
+    "id":name
+  }
+  
+  var reads = rddt_http(api_path, payload, undefined, creds)
   
   return reads
 }

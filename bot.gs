@@ -59,14 +59,14 @@ function post_quotes(sr) {
   var quote = get_random_quote()
   var text = quote.quote 
   var author = quote.author
-  var title = Utilities.formatString("\"%s\" - %s", text, author)
+  var title = Utilities.formatString("\"%s\" --- %s", text, author)
   
   var r = post_to_sr(sr, title, "", username)
+  var url = r.json.data.url
   
-  console.log(r)
-  console.log("post_quotes():%s:%s:%s:%s", sr, title, username, r.json.data.url)
+  console.log("post_quotes():%s:%s:%s:%s", sr, title, username, url)
 
-  return r  
+  return url  
 }
 
 
@@ -77,9 +77,9 @@ function post_to_test() {
   
   var sr = "test"
   var r = post_to_sr(sr, title, text, username)
+  var url = r.json.data.url
   
-  console.log("%s", r)
-  console.log("%s:%s:%s:%s", title, text, username, r.json.data.url)
+  console.log("%s:%s:%s:%s", title, text, username, url)
   
   return url
 }
@@ -135,7 +135,7 @@ function get_quote_andruxnet() {
 function get_random_quote() {
   var choice = NOW % 2
   
-  if(true) {
+  if(choice == 0) {
     var result = get_quote_talaikis()
   } else {
     var result = get_quote_andruxnet()
@@ -198,7 +198,7 @@ function upvote_any(type) {
     "dir":"1"
   }
   
-//  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
+  console.log("upvote_any():%s:%s:%s:%s", title, data.likes, data.name, username)    
   // push voter back to voter queue while http call fails?
   var api_path = api.vote 
   var reads = rddt_http(api_path, payload, undefined, creds)
