@@ -1,21 +1,25 @@
 var test_words = [
-  "test now", 
-  "test go go", 
+  "do you see my test?",
+  "text test", 
   "how is your test?",
-  "another test",
-  "file a test",
-  "test a test",
-  "how's the test",
+  "another test, see ya",
+  "test a test, good?",
+  "how's the test?",
   "how's your test?",
-  "good test!!!!????",
-  "go go tester",
-  "this is a test",
-  "text test",
+  "test test, ok?",
+  "test",
+  "test",
+  "test test",
+  "test test",
+  "tester does a test, fine?",
+  "this is a test, right?",
   "the other test",
   "good tester",
-  "hi hi tester",
-  "how are you???",
-  "do you see the test?"]
+  "hi tester",
+  "fine test?",
+  "good test?",
+  "test?",
+  "how are you???"]
 
 
 var reply_words = [
@@ -54,19 +58,30 @@ function post_to_secret_sr() {
 }
 
 
-function post_quotes(sr) {
+function post_quotes(sr, text) {
   var username = get_random(voter_obj.voter)
-  var quote = get_random_quote()
-  var text = quote.quote 
-  var author = quote.author
-  var title = Utilities.formatString("\"%s\" --- %s", text, author)
+  
+  if(text == undefined) {
+    var quote = get_random_quote()
+    var text = quote.quote 
+    var author = quote.author
+  } else {        
+    var author = "nobody"  
+  }
+    
+  var title = Utilities.formatString("\"%s\" - %s", text, author)
   
   var r = post_to_sr(sr, title, "", username)
-  var url = r.json.data.url
+  var data = r.json.data
   
-  console.log("post_quotes():%s:%s:%s:%s", sr, title, username, url)
-
-  return url  
+  if(data) {
+    var url = r.json.data.url
+    console.log("post_quotes():%s:%s:%s:%s", sr, title, username, url)    
+    return url
+  } else {
+    console.log("post_quotes() failed:%s:%s:%s", sr, title, username)
+    return undefined  
+  }  
 }
 
 
@@ -90,7 +105,7 @@ function post_to_sr(sr, title, text, username) {
   
   var payload = {
     "sr":sr,
-    "title":title,
+    "title":title.replace(/;/g,":"),
     "text":text,
     "api_type":"json",
     "kind":"self"
@@ -145,11 +160,14 @@ function get_random_quote() {
 }
 
 
-function reply_any() {
+function reply_any(text) {
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
   var name = get_any_thing(creds)
-  var text = get_random(reply_words)
+  
+  if(text == undefined) {
+    var text = get_random(reply_words)
+  }
   
   var payload = {
     "api_type":"json",

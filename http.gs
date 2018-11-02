@@ -1,5 +1,3 @@
-var httpretries = 3 
-
 //
 function rddt_http(api_path, payload, listing_max, creds) {
   var options;
@@ -33,7 +31,7 @@ function rddt_http(api_path, payload, listing_max, creds) {
         var url = api_path
       }
       
-      var response = httpretry(url, options) 
+      var response = httplib.httpretry(url, options) 
       var text = response.getContentText()  
       var json = JSON.parse(text) 
       var dist = json.data.dist
@@ -54,7 +52,7 @@ function rddt_http(api_path, payload, listing_max, creds) {
       }    
     }    
   } else { 
-    var response = httpretry(api_path, options)
+    var response = httplib.httpretry(api_path, options)
     
     var text = response.getContentText()
     var json = JSON.parse(text)     
@@ -104,7 +102,7 @@ function get_accesstoken(basic_auth, refresh_token) {
     "payload":payload
   }
   
-  var response = httpretry(url, options)
+  var response = httplib.httpretry(url, options)
   
   var text = response.getContentText()
   var json = JSON.parse(text)
@@ -114,32 +112,6 @@ function get_accesstoken(basic_auth, refresh_token) {
 }
 
 //
-function httpretry(url, options, ifNthrow) {
-  for(var i = 1; i <= httpretries; i++) {
-    try { 
-      if( options == undefined ) {
-        var response = UrlFetchApp.fetch(url)
-      } else {
-        var response = UrlFetchApp.fetch(url, options)
-      }
-      var code = response.getResponseCode()
-      if( code == 200 ) {
-        return response
-      }
-    } catch(e) {
-      Utilities.sleep(1000 * 1)
-      if( i >= httpretries ) {
-        if(ifNthrow == true) {
-          console.log(e)
-          return undefined
-        } else {
-          throw_print(e)
-        }
-      }
-      
-    }
-  }  
-}
 
 //
 function get_basicauth(client_id, secret) {

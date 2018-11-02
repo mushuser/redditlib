@@ -217,3 +217,15 @@ function batch_del_message_fr_voter() {
     del_message_fr_voter(voters[i]) 
   }
 }
+
+// 
+function batch_targeted_posts() {
+  var comments = get_comments(25)
+  
+  for(var i in comments) {
+    var data = comments[i].data
+  }
+  
+  return comments
+  
+}

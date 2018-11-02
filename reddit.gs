@@ -35,7 +35,7 @@ function get_wikis(mapping) {
   for(var m in mapping) {
     values.push(mapping[m])  
   }
-  values = get_unique(values)  
+  values = httplib.get_unique(values)  
   
   return values
 }
@@ -91,7 +91,7 @@ function get_ids_fr_page(page) {
     }
   }
   
-  ids = get_unique(ids)
+  ids = httplib.get_unique(ids)
 
   return ids
 }
@@ -426,7 +426,7 @@ function get_escaped_title(title) {
 //
 function get_escaped_body(body) {
   var r = body
-  r = r.replace(/&amp;/mg, "\&")
+  r = r.replace(/&amp;/mg, "\&") //bug
   
   return r
 }

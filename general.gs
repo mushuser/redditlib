@@ -68,15 +68,6 @@ function getCaller()
 }
 
 
-function get_unique(list){
-  list = list.filter(function(item, pos) {
-    return list.indexOf(item) == pos;
-  }) 
-  
-  return list
-}
-
-
 function get_random(items) {
   var item = items[Math.floor(Math.random()*items.length)];
   

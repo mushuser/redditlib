@@ -98,7 +98,7 @@ function get_ids_fr_gd(folder_id) {
     }    
   }
   
-  ids = get_unique(ids)
+  ids = httplib.get_unique(ids)
   
   IDS_GD = ids
   return IDS_GD
