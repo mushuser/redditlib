@@ -43,30 +43,6 @@ function deep_read(obj, path) {
   }
 }
 
-//
-function throw_print(usermsg) {
-  var caller = getCaller()
-  var msg = caller+":"+usermsg
-  throw msg
-}
-
-//
-function getCaller()
-{
-  var stack;
-  try {
-    throw new Error("");
-  } catch(e) {
-    stack = e.stack;
-  } finally {
-    var stacks = stack.split("\n")
-    var last = stacks[stacks.length-2]
-    var m = last.match(/at (.*)/)
-    
-    return m[1]
-  }
-}
-
 
 function get_random(items) {
   var item = items[Math.floor(Math.random()*items.length)];
