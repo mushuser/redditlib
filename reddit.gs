@@ -583,7 +583,7 @@ function get_voter_likes(name, username) {
     "muteHttpExceptions":mute
   }
   
-  var response = httpretry(api_path, options)
+  var response = httplib.httpretry(api_path, options)
   
   var text = response.getContentText()
   var json = JSON.parse(text)     

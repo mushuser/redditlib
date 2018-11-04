@@ -129,7 +129,7 @@ function get_quote_talaikis() {
 function get_quote_andruxnet() {
   var url = "https://andruxnet-random-famous-quotes.p.mashape.com/?count=1"
   
-  var key = "hOr6Cu18FwmshduhpHAIjxJRV5hxp13jxITjsn5OXVINNEpBAy"
+  var key = secret.andruxnet_key
   
   var headers = {
     "X-Mashape-Key":key,
