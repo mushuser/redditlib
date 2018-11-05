@@ -5,7 +5,7 @@ function rddt_http(api_path, payload, listing_max, creds) {
   
   if( isOauth(api_path) ) {
     var headers = {
-      "Authorization":get_bearer(creds)
+      "Authorization":authlib.r_get_bearer(creds)
     }     
     
     options = {
@@ -59,66 +59,4 @@ function rddt_http(api_path, payload, listing_max, creds) {
             
     return json
   }
-}  
-
-//
-function get_bearer(creds) {
-  if(creds == undefined) {
-    creds = credential
-  }
-  
-  if((creds.username == credential.username) && (ACCESS_TOKEN != undefined)) {
-    return get_bearerauth(ACCESS_TOKEN)
-  }
-  
-  var basic_auth = get_basicauth(
-    creds.client_id, 
-    creds.secret)
-
-  var access_token = get_accesstoken(
-    basic_auth,
-    creds.refresh_token
-  )
- 
-  return get_bearerauth(access_token)
-}
-
-
-function get_accesstoken(basic_auth, refresh_token) {
-  var url = "https://www.reddit.com/api/v1/access_token"
-  
-  var headers = {
-    "Authorization":basic_auth
-  }
-  
-  var payload = {
-    "grant_type":"refresh_token",
-    "refresh_token":refresh_token,    
-  }
-  
-  var options = {
-    "headers":headers,
-    "method":"post",
-    "payload":payload
-  }
-  
-  var response = httplib.httpretry(url, options)
-  
-  var text = response.getContentText()
-  var json = JSON.parse(text)
-  var access_token = json.access_token
-  
-  return access_token
-}
-
-//
-
-//
-function get_basicauth(client_id, secret) {
-  return "Basic " + Utilities.base64Encode(client_id + ':' + secret)
-}
-
-//
-function get_bearerauth(access_token) {
-  return "bearer " + access_token
 }
