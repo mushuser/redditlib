@@ -75,7 +75,7 @@ function post_quotes(sr, text) {
   var data = r.json.data
   
   if(data) {
-    var url = r.json.data.url
+    var url = data.url
     console.log("post_quotes():%s:%s:%s:%s", sr, title, username, url)    
     return url
   } else {
@@ -92,11 +92,14 @@ function post_to_test() {
   
   var sr = "test"
   var r = post_to_sr(sr, title, text, username)
-  var url = r.json.data.url
+  var data = r.json.data
   
-  console.log("%s:%s:%s:%s", title, text, username, url)
-  
-  return url
+  if(data) {
+    var url = data.url
+    console.log("%s:%s:%s:%s", title, text, username, url)
+    
+    return url
+  }
 }
 
 
@@ -120,7 +123,7 @@ function post_to_sr(sr, title, text, username) {
 function get_quote_talaikis() {
   var url = "https://talaikis.com/api/quotes/random/"
 
-  var response = JSON.parse(httpretry(url))
+  var response = JSON.parse(httplib.httpretry(url))
 
   return response  
 }
@@ -141,7 +144,7 @@ function get_quote_andruxnet() {
     "muteHttpExceptions":false
   }      
   
-  var response = JSON.parse(httpretry(url, options))[0]
+  var response = JSON.parse(httplib.httpretry(url, options))[0]
 
   return response
 }
