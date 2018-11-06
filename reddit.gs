@@ -575,7 +575,7 @@ function get_voter_likes(name, username) {
   
   var creds = get_voter_creds(username)
   var headers = {
-    "Authorization":get_bearer(creds)
+    "Authorization":authlib.r_get_bearer(creds)
   }     
   
   var options = {
