@@ -97,18 +97,18 @@ function get_ids_fr_page(page) {
 }
 
 //
-function get_page(wiki_path) {
-  return get_page_obj(wiki_path).data.content_md
+function get_page(wiki_path, sr) {
+  return get_page_obj(wiki_path, sr).data.content_md
 }
 
 //
-function get_page_obj(wiki_path, obj_path) {
+function get_page_obj(wiki_path, sr) {
   if(wiki_path[0] != "/") {
     wiki_path = "/" + wiki_path
   }
-  var api_path = api.wiki_page_f(SUBREDDIT, wiki_path)
+  var api_path = api.wiki_page_f((sr == undefined)?SUBREDDIT:sr, wiki_path)
 
-  var r = rddt_http(api_path, obj_path)
+  var r = rddt_http(api_path)
   return r
 }
 
@@ -379,8 +379,8 @@ function get_objects(reads, ifcheck) {
 
 
 //
-function update_wiki(page, content) {
-  var api_path = api.wiki_edit_f(SUBREDDIT)
+function update_wiki(page, content, sr) {
+  var api_path = api.wiki_edit_f((sr == undefined)?SUBREDDIT:sr)
   var payload = {
     "page":page,
     "content":content
