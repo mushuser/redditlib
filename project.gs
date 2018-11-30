@@ -55,7 +55,7 @@ function check_init() {
     (FLAIR_MAPPING == undefined) ||
     (GD_FOLDER_ID == undefined)
     ){
-    var msg = "init_project() failed, call init_project()."
+    var msg = "redditlib.init_project() failed, call init_project()."
     throw msg  
   }  
 }

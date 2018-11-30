@@ -337,6 +337,7 @@ function get_objects(reads, ifcheck) {
     if(kind == "t1") {
       var parent_name = data.parent_id // name
       var parent = get_parent(parent_name)
+      httplib.printc("%s", JSON.stringify(parent))
       var flair = parent.link_flair_text
       var title = get_escaped_title(data.link_title + "(回覆)")
       var age = get_age(parent.created_utc)
@@ -345,6 +346,8 @@ function get_objects(reads, ifcheck) {
       var flair = data.link_flair_text // t3 only
       var title = get_escaped_title(data.title)
     }
+    
+    httplib.printc("%s", JSON.stringify(data))
     
     var id = data.id    
     var name = data.name

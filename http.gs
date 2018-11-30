@@ -6,7 +6,7 @@ function rddt_http(api_path, payload, listing_max, creds) {
   if( isOauth(api_path) ) {
     var headers = {
       "Authorization":authlib.r_get_bearer(creds)
-    }     
+    }
     
     options = {
       "headers":headers,
