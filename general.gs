@@ -1,5 +1,6 @@
 var ARCHIVED_AGE = 180 // six months in days
 
+// (age >= MIN_AGE) && (age < MAX_AGE)
 var MIN_AGE = 3
 var MAX_AGE = 5
 

@@ -10,9 +10,13 @@ function rddt_http(api_path, payload, listing_max, creds) {
     
     options = {
       "headers":headers,
-      "payload":payload,
       "muteHttpExceptions":mute
-    }    
+    }
+
+    if(payload) {
+      options.payload = payload
+    }
+      
   } else {
     options = {
       "muteHttpExceptions":mute

@@ -97,18 +97,18 @@ function get_ids_fr_page(page) {
 }
 
 //
-function get_page(wiki_path, sr) {
-  return get_page_obj(wiki_path, sr).data.content_md
+function get_page(wiki_path, sr, creds) {
+  return get_page_obj(wiki_path, sr, creds).data.content_md
 }
 
 //
-function get_page_obj(wiki_path, sr) {
+function get_page_obj(wiki_path, sr, creds) {
   if(wiki_path[0] != "/") {
     wiki_path = "/" + wiki_path
   }
   var api_path = api.wiki_page_f((sr == undefined)?SUBREDDIT:sr, wiki_path)
 
-  var r = rddt_http(api_path)
+  var r = rddt_http(api_path, undefined, undefined, creds)
   return r
 }
 
@@ -304,7 +304,7 @@ function add_goodpost(saved) {
   var link = get_link(saved.id)
   var new_page = get_updatedpage(body, title, link)      
   
-  update_wiki(saved.catalog, new_page)
+  update_wiki(saved.catalog, new_page, undefined, credential_atwikibot)
   
   var updated_page = get_page(saved.catalog)
   var isinpage = check_idinpage(updated_page, saved.id)
@@ -382,13 +382,13 @@ function get_objects(reads, ifcheck) {
 
 
 //
-function update_wiki(page, content, sr) {
+function update_wiki(page, content, sr, creds) {
   var api_path = api.wiki_edit_f((sr == undefined)?SUBREDDIT:sr)
   var payload = {
     "page":page,
     "content":content
   }
-  var reads = rddt_http(api_path, payload)  
+  var reads = rddt_http(api_path, payload, undefined, creds)  
 }
 
 //
