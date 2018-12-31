@@ -5,7 +5,7 @@ var credential = {
   refresh_token:undefined  
 }
 
-var credential_atwikibot = undefined
+var credential_wikibot = undefined
 
 
 var credential_voters = undefined
@@ -27,7 +27,7 @@ var voter_obj = {
 } 
 
 
-function init_project(sr, secret_sr, creds_main, creds_voters, creds_atwikibot, folder_id, flair_mapping) {
+function init_project(sr, secret_sr, creds_main, creds_voters, creds_wikibot, folder_id, flair_mapping) {
   SUBREDDIT = sr
   SECRET_SR = secret_sr
   
@@ -35,7 +35,7 @@ function init_project(sr, secret_sr, creds_main, creds_voters, creds_atwikibot, 
 
   credential_voters = creds_voters
   
-  credential_atwikibot = creds_atwikibot
+  credential_wikibot = creds_wikibot
   
   for(var i in credential_voters) {
     voter_obj.voter.push(credential_voters[i].username)
