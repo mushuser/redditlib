@@ -304,7 +304,7 @@ function add_goodpost(saved) {
   var link = get_link(saved.id)
   var new_page = get_updatedpage(body, title, link)      
   
-  update_wiki(saved.catalog, new_page, undefined, credential_atwikibot)
+  update_wiki(saved.catalog, new_page, undefined, credential_wikibot)
   
   var updated_page = get_page(saved.catalog)
   var isinpage = check_idinpage(updated_page, saved.id)
