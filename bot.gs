@@ -153,8 +153,8 @@ function get_quote_andruxnet() {
 function get_random_quote() {
   var choice = NOW % 2
   
-  if(choice == 0) {
-    var result = get_quote_talaikis()
+  if(false) {
+    var result = get_quote_talaikis() // talaikis broken since 2018/12/23
   } else {
     var result = get_quote_andruxnet()
   }
