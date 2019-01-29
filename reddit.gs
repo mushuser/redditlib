@@ -13,6 +13,9 @@ var api = {
   submit: "https://oauth.reddit.com/api/submit.json",
   inbox: "https://oauth.reddit.com/message/inbox.json",
   user_about_f: function(username){return "https://www.reddit.com/user/"+username+"/about.json"},
+  user_overview_f: function(username){return "https://www.reddit.com/user/"+username+"/overview.json"},
+  user_submitted_f: function(username){return "https://www.reddit.com/user/"+username+"/submitted.json"},
+  user_comments_f: function(username){return "https://www.reddit.com/user/"+username+"/comments.json"},  
   info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
@@ -640,6 +643,22 @@ function get_created_utc_age(name) {
 
 function get_user_about(username) {
   var api_path = api.user_about_f(username)
+  var reads = rddt_http(api_path)    
+  
+  return reads
+}
+
+
+function get_user_submitted(username) {
+  var api_path = api.user_submitted_f(username)
+  var reads = rddt_http(api_path)    
+  
+  return reads
+}
+
+
+function get_user_comments(username) {
+  var api_path = api.user_comments_f(username)
   var reads = rddt_http(api_path)    
   
   return reads

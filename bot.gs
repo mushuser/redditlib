@@ -338,3 +338,43 @@ function update_karmas() {
   
   return deltas
 }
+
+
+function punish_users(times) {
+  if(times == undefined) {
+    times = 20  
+  }
+  
+  var users = secret.badusers
+  
+  for(var i in users) {
+    var user = users[i]
+ 
+    var objs_submitted = get_user_submitted(user).data.children
+    
+    for(var j in objs_submitted) {
+      var data = objs_submitted[j].data
+      var o = to_voter_obj(data, "-1")
+      set_arg_queue(o)
+      console.log(o)
+      
+      if(j>=times) {
+        break  
+      }
+    }
+
+    var objs_comments = get_user_comments(user).data.children
+    
+    for(var k in objs_comments) {
+      var data = objs_comments[k].data
+      var o = to_voter_obj(data, "-1")
+      set_arg_queue(o)
+      console.log(o)
+      
+      if(k>=times) {
+        break  
+      }
+
+    }
+  } 
+}
