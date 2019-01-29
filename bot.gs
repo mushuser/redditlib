@@ -265,7 +265,7 @@ function get_any_t3(creds) {
 
 function get_secret_t3(creds) {
   var sr = SECRET_SR
-  var reads = get_comments_oauth(25, sr, creds)
+  var reads = get_comments_oauth(10, sr, creds)
   var t3_names = get_names_fr_obj(reads)
 
   return t3_names  
@@ -274,7 +274,7 @@ function get_secret_t3(creds) {
 
 function get_secret_thing(creds) {
   var sr = SECRET_SR
-  var reads = get_comments_oauth(25, sr, creds)
+  var reads = get_comments_oauth(10, sr, creds)
   var t3_names = get_names_fr_obj(reads)
 
   var names = []
