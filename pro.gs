@@ -123,7 +123,7 @@ function to_voter_obj(obj, dir) {
   voter_obj.name = obj.name
   voter_obj.dir = dir
   voter_obj.title = obj.title
-  voter_obj.age = get_age(obj.created_utf)
+  voter_obj.age = obj.age
 
   return voter_obj  
 }

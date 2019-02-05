@@ -132,8 +132,8 @@ function get_downvoted_children(max) {
 }
 
 // utc
-function get_age(created) {
-    var created = created * 1000
+function get_age(created_in) {
+    var created = parseInt(created_in) * 1000
     var age_days = (NOW - created) / 86400000
     var round = Math.round(age_days * 10)/10
     
@@ -344,13 +344,13 @@ function get_objects(reads, ifcheck) {
       var flair = parent.link_flair_text
       var title = get_escaped_title(data.link_title + "(回覆)")
       var age = get_age(parent.created_utc)
-      } else if(kind == "t3") {
+    } else if(kind == "t3") {
       var age = get_age(data.created_utc)
       var flair = data.link_flair_text // t3 only
       var title = get_escaped_title(data.title)
     }
     
-    httplib.printc("%s", JSON.stringify(data))
+    httplib.printc("3 %s", JSON.stringify(data))
     
     var id = data.id    
     var name = data.name
@@ -509,6 +509,7 @@ function clean_vote(obj) {
 //
 function vote_thing(obj, dir) {
   if(obj.age > ARCHIVED_AGE) {
+    console.log("Age over: %s", JSON.stringify(obj))
     return false
   }
   

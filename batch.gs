@@ -103,17 +103,20 @@ function batch_add_goodposts() {
   if(saveds.length > 0) {
     console.log("batch_add_goodposts() in")
   }
+  
   for(var i=0;i<saveds.length;i++) {
     var s = saveds[i]
     
     s.catalog = get_wikicatalog(s.flair)
+
+    //console.log(s)
     
     var c = check_values(s.catalog, s.title, s.flair, s.name)
     if(c == false) {
       continue  
     }      
     
-    var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog)
+    var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog, s.age)
     
     var r = add_goodpost(s)
     
@@ -131,10 +134,9 @@ function batch_add_goodposts() {
       set_arg_queue(o)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
-      up_vote(s)
-      
-      var o = to_voter_obj(s, "1")
-      set_arg_queue(o)
+//      up_vote(s)
+//      var o = to_voter_obj(s, "1")
+//      set_arg_queue(o)
     } else if(r == code.ADDPOST_EMPTY) {
       console.info("empty page") 
     }
