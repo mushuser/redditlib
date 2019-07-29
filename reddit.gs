@@ -710,3 +710,15 @@ function del_msg(name, creds) {
   
   return reads
 }
+
+
+function clear_t1t3(username) {
+//  var t1t3s = []
+// get username t1
+  var t1t3s = get_user_submitted(username)
+  
+  return t1t3s
+
+// get t3  
+  
+}
