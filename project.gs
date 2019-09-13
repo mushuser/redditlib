@@ -23,26 +23,32 @@ var voter_obj = {
   dir:undefined,
   age:undefined,
   title:undefined,
-  voter:[]
+  voter:[],
+  need_voter:[]
 } 
 
-
-function init_project(sr, secret_sr, creds_main, creds_voters, creds_wikibot, folder_id, flair_mapping) {
-  SUBREDDIT = sr
-  SECRET_SR = secret_sr
+//function init_project(sr, secret_sr, creds_main, creds_voters, need_voter, creds_wikibot, folder_id, flair_mapping) {
+function init_project(params) {
+  SUBREDDIT = params.subreddit
+  SECRET_SR = params.secret_sr
   
-  credential = creds_main
+  credential = params.creds_main
 
-  credential_voters = creds_voters
   
-  credential_wikibot = creds_wikibot
+  credential_voters = params.creds_voters
+  
+  credential_wikibot = params.creds_wikibot
   
   for(var i in credential_voters) {
     voter_obj.voter.push(credential_voters[i].username)
   }
+
+  for(var i in params.need_voter) {
+    voter_obj.need_voter.push(params.need_voter[i].username)
+  }
   
-  GD_FOLDER_ID = folder_id
-  FLAIR_MAPPING = flair_mapping
+  GD_FOLDER_ID = params.folder_id
+  FLAIR_MAPPING = params.flair_mapping
 }
 
 

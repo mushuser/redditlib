@@ -168,6 +168,8 @@ function get_info(name, creds) {
   var api_path = api.info_f(name)
   var read = rddt_http(api_path, undefined, undefined, creds)
 
+  
+  //return read
   return read.data.children[0] //safe
 }
 

@@ -59,8 +59,8 @@ function post_to_secret_sr() {
 
 
 function post_quotes(sr, text) {
-  var username = get_random(voter_obj.voter)
-  
+  var username = get_random(voter_obj.need_voter)
+  Logger.log(username)
   if(text == undefined) {
     var quote = get_random_quote()
     var text = quote.quote 
@@ -73,7 +73,7 @@ function post_quotes(sr, text) {
   
   var r = post_to_sr(sr, title, "", username)
   var data = r.json.data
-  
+  console.log(data)
   if(data) {
     var url = data.url
     console.log("post_quotes():%s:%s:%s:%s", sr, title, username, url)    
@@ -164,7 +164,8 @@ function get_random_quote() {
 
 
 function reply_any(text) {
-  var username = get_random(voter_obj.voter) 
+//  var username = get_random(voter_obj.need_voter) 
+  var username = get_random(voter_obj.need_voter) 
   var creds = get_voter_creds(username)
   var name = get_any_thing(creds)
   

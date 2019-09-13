@@ -1,6 +1,8 @@
 //
 function batch_del_old_comments() {
   var api_path = api.comments_user_f(credential.username)
+  
+  
   var reads = rddt_http(api_path)
   
   if(reads.length > 0) {
@@ -119,19 +121,19 @@ function batch_add_goodposts() {
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog, s.age)
     
     var r = add_goodpost(s)
-    
+   
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
       up_vote(s)
       
-      var o = to_voter_obj(s, "1")
-      set_arg_queue(o)
+      //var o = to_voter_obj(s, "1")
+      //set_arg_queue(o)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
       clean_vote(s)
       
-      var o = to_voter_obj(s, "0")
-      set_arg_queue(o)
+      //var o = to_voter_obj(s, "0")
+      //set_arg_queue(o)
     } else if(r == code.ADDPOST_ALREADY) {
       console.info("already added:%s",msg)
 //      up_vote(s)
@@ -140,6 +142,7 @@ function batch_add_goodposts() {
     } else if(r == code.ADDPOST_EMPTY) {
       console.info("empty page") 
     }
+   
   }
   
   if(saveds.length > 0) {
@@ -187,6 +190,9 @@ function batch_voter_vote() {
 // 1 day = 1440 minutes / 5 minutes = 288 times
 // 30(up+down) * 6 users * 5 minutes = 900 minutes
 function batch_set_arg_queue() {
+  
+  return
+  
   var ups = get_upvoted(20)
   var downs = get_downvoted(10)
   var updowns = ups.concat(downs)
@@ -230,4 +236,21 @@ function batch_targeted_posts() {
   
   return comments
   
+}
+
+
+function batch_del_public_comments(username) {
+    var objs_comments = get_user_comments(username).data.children
+    var creds = get_voter_creds(username)
+      
+    Logger.log(creds)
+//    Logger.log(objs_comments)
+    for(var i in objs_comments) {
+
+      var data = objs_comments[i].data
+      var name = data.name
+      Logger.log(name)
+      var r = del_thing(name, creds)
+      Logger.log(r)
+    }
 }
