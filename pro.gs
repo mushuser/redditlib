@@ -12,7 +12,8 @@ function copy_voter(from,to) {
 }
   
 
-function get_voter_queue() {
+function get_voter_queue() {  
+  return
   var pro = PropertiesService.getScriptProperties()
   var current_arg_s = pro.getProperty(VOTER_QUEUE)
   

@@ -2,8 +2,12 @@
 function rddt_http(api_path, payload, listing_max, creds) {
   var options;
   var mute = false
-  
+    
   if( isOauth(api_path) ) {
+    if(creds == undefined) {
+      throw "no creds" 
+    }
+
     var headers = {
       "Authorization":authlib.r_get_bearer(creds)
     }

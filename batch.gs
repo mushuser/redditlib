@@ -99,8 +99,8 @@ function batch_clean_voted() {
 }
 
 //
-function batch_add_goodposts() {
-  var saveds = get_saved()
+function batch_add_goodposts(username) {
+  var saveds = get_saved(username)
   
   if(saveds.length > 0) {
     console.log("batch_add_goodposts() in")
@@ -120,23 +120,23 @@ function batch_add_goodposts() {
     
     var msg = Utilities.formatString("%s, %s, %s, %s", s.title, s.name, s.flair, s.catalog, s.age)
     
-    var r = add_goodpost(s)
+    var r = add_goodpost(s, username)
    
     if(r == code.ADDPOST_ADDED) {
       console.info("added:%s",msg)
-      up_vote(s)
+      up_vote(s, username)
       
       //var o = to_voter_obj(s, "1")
       //set_arg_queue(o)
     } else if(r == code.ADDPOST_NOT) {
       console.info("not added:%s",msg)
-      clean_vote(s)
+      clean_vote(s, username)
       
       //var o = to_voter_obj(s, "0")
       //set_arg_queue(o)
     } else if(r == code.ADDPOST_ALREADY) {
-      console.info("already added:%s",msg)
-//      up_vote(s)
+      //console.info("already added:%s",msg)
+      up_vote(s, username)
 //      var o = to_voter_obj(s, "1")
 //      set_arg_queue(o)
     } else if(r == code.ADDPOST_EMPTY) {
@@ -152,6 +152,7 @@ function batch_add_goodposts() {
 
 
 function batch_voter_vote() {
+  return
   var obj = get_voter_queue()
   
   if(obj == undefined) { 
@@ -189,8 +190,7 @@ function batch_voter_vote() {
 
 // 1 day = 1440 minutes / 5 minutes = 288 times
 // 30(up+down) * 6 users * 5 minutes = 900 minutes
-function batch_set_arg_queue() {
-  
+function batch_set_arg_queue() {  
   return
   
   var ups = get_upvoted(20)

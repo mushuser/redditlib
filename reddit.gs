@@ -15,7 +15,7 @@ var api = {
   user_about_f: function(username){return "https://www.reddit.com/user/"+username+"/about.json"},
   user_overview_f: function(username){return "https://www.reddit.com/user/"+username+"/overview.json"},
   user_submitted_f: function(username){return "https://www.reddit.com/user/"+username+"/submitted.json"},
-  user_comments_f: function(username){return "https://www.reddit.com/user/"+username+"/comments.json"},  
+  user_submitted_f_o: function(username, subreddit){return "https://www.reddit.com/user/"+username+"/submitted.json"},
   info_f: function(name){return "https://oauth.reddit.com/api/info.json?id="+name},
   pages_f: function(sr){return "https://www.reddit.com/r/"+sr+"/wiki/pages.json"},
   saved_f: function(user){return "https://oauth.reddit.com/user/"+user+"/saved.json?limit=100"},
@@ -141,10 +141,11 @@ function get_age(created_in) {
 }
 
 //
-function get_saved_children() {
-  var api_path = api.saved_f(credential.username)
-  var reads = rddt_http(api_path)
-//  Logger.log(reads)
+function get_saved_children(username) {
+  var api_path = api.saved_f(username)
+  var creds = get_user_creds(username)
+  var reads = rddt_http(api_path, undefined, undefined, creds)
+
   return reads
 }
 
@@ -166,6 +167,11 @@ var code = {
 //
 function get_info(name, creds) {
   var api_path = api.info_f(name)
+  
+  if(creds == undefined) {
+    creds = credential_wikibot
+  }
+  
   var read = rddt_http(api_path, undefined, undefined, creds)
 
   
@@ -254,9 +260,10 @@ function get_content_fr_info(info) {
 }
 
 //
-function get_link(id) {
+function get_link(id, username) {
   var name = get_name(id)
-  var json = get_info(name)
+  var creds = get_user_creds(username)
+  var json = get_info(name, creds)
   var data = json.data
   var link = data.permalink
   
@@ -290,7 +297,7 @@ function get_kind(name) {
 }
 
 //
-function add_goodpost(saved) {
+function add_goodpost(saved, username) {
   var current_page = get_page(saved.catalog)
   
   if(current_page.length < 2) {
@@ -300,21 +307,21 @@ function add_goodpost(saved) {
   var isinpage = check_idinpage(current_page, saved.id)
 
   if(isinpage) {
-    unsave_thing(saved.name)
+    unsave_thing(saved.name, username)
     return code.ADDPOST_ALREADY
   }
- 
+  
   var body = get_escaped_body(current_page)
   var title = get_escaped_title(saved.title)
-  var link = get_link(saved.id)
+  var link = get_link(saved.id, username)
   var new_page = get_updatedpage(body, title, link)      
   
   update_wiki(saved.catalog, new_page, undefined, credential_wikibot)
-  
+
   var updated_page = get_page(saved.catalog)
   var isinpage = check_idinpage(updated_page, saved.id)
   if(isinpage) {
-    unsave_thing(saved.name)
+    unsave_thing(saved.name, username)
     return code.ADDPOST_ADDED
   } else {
     return code.ADDPOST_NOT
@@ -322,8 +329,8 @@ function add_goodpost(saved) {
 }
 
 //
-function get_saved() {
-  var reads = get_saved_children()
+function get_saved(username) {
+  var reads = get_saved_children(username)
   var objs = get_objects(reads, true)
 
   return objs  
@@ -397,12 +404,13 @@ function update_wiki(page, content, sr, creds) {
 }
 
 //
-function unsave_thing(name) {
+function unsave_thing(name, username) {
   var api_path = api.unsave
   var payload = {
     "id":name
   }
-  var reads = rddt_http(api_path, payload)    
+  var creds = get_user_creds(username)
+  var reads = rddt_http(api_path, payload, undefined, creds)    
 }
 
 //
@@ -494,22 +502,22 @@ function get_downvoted(max) {
 
 
 //
-function up_vote(obj) {
-  vote_thing(obj, "1")  
+function up_vote(obj, username) {
+  vote_thing(obj, "1", username)  
 }
 
 //
-function down_vote(obj) {
-  vote_thing(obj, "-1")  
+function down_vote(obj, username) {
+  vote_thing(obj, "-1", username)  
 }
 
 //
-function clean_vote(obj) {
-  vote_thing(obj, "0")  
+function clean_vote(obj, username) {
+  vote_thing(obj, "0", username)  
 }
 
 //
-function vote_thing(obj, dir) {
+function vote_thing(obj, dir, username) {
   if(obj.age > ARCHIVED_AGE) {
     console.log("Age over: %s", JSON.stringify(obj))
     return false
@@ -520,8 +528,8 @@ function vote_thing(obj, dir) {
     "id":obj.name,
     "dir":dir
   }
-  
-  var reads = rddt_http(api_path, payload)    
+  var creds = get_user_creds(username)
+  var reads = rddt_http(api_path, payload, undefined, creds)    
   
   return true //?
 }
@@ -536,6 +544,22 @@ function get_voter_creds(username) {
   
   return undefined
 }
+
+function get_user_creds(username) {
+  for(var i in credential_voters) {
+    var un = credential_voters[i].username
+    if(un == username) {
+      return credential_voters[i]
+    }
+  }  
+  
+  if(username == credential.username) {
+    return credential
+  }
+  
+  return undefined
+}
+
 
 //
 function get_comments(listing_max) {
@@ -653,6 +677,13 @@ function get_user_about(username) {
 
 
 function get_user_submitted(username) {
+  var api_path = api.user_submitted_f(username)
+  var reads = rddt_http(api_path)    
+  
+  return reads
+}
+
+function get_use_submitted(username) {
   var api_path = api.user_submitted_f(username)
   var reads = rddt_http(api_path)    
   

@@ -190,11 +190,11 @@ function reply_any(text) {
 }
 
 
-function upvote_any(type) {  
+function upvote_any(total) {  
   var username = get_random(voter_obj.voter) 
   var creds = get_voter_creds(username)
   
-  if(type == "t3") {
+  if(one_or_zero()) {
     var name = get_any_t3(creds)
   } else {
     var name = get_any_thing(creds)
@@ -205,11 +205,15 @@ function upvote_any(type) {
   
   var likes = data.likes
   
+  if(total == undefined) {
+    total = 20  
+  }
+  
   if(obj.kind == "t1") {
     var parent = get_parent_oauth(name, creds)
-    var title = parent.title.slice(0,15)
+    var title = parent.title.slice(0,total)
   } else {
-    var title = data.title.slice(0,15)
+    var title = data.title.slice(0,total)
   }
   
   if(likes == true) {

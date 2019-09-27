@@ -40,7 +40,7 @@ function getKey(key) {
   var value = cache.get(key)
   
   if(value == null) {
-    Logger.log("null")
+    Logger.log("getKey: null")
     var json = getJSON()
     cache.putAll(json, lastSec)
     value = cache.get(key)     

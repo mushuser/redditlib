@@ -9,6 +9,12 @@ var NOW = (new Date()).getTime()
 
 var IDS_GD;
 
+
+//
+function one_or_zero() {
+  return Math.floor((Math.random()*2))  
+}
+
 //
 function check_values(variables) {
   var msg = ""
