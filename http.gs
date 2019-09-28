@@ -7,6 +7,11 @@ function rddt_http(api_path, payload, listing_max, creds) {
     if(creds == undefined) {
       throw "no creds" 
     }
+    
+    // actually it's username
+    if(typeof(creds) == "string") { 
+      creds = get_user_creds(creds)  
+    }
 
     var headers = {
       "Authorization":authlib.r_get_bearer(creds)

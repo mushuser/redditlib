@@ -2,7 +2,6 @@
 function batch_del_old_comments() {
   var api_path = api.comments_user_f(credential.username)
   
-  
   var reads = rddt_http(api_path)
   
   if(reads.length > 0) {
@@ -253,4 +252,30 @@ function batch_del_public_comments(username) {
       var r = del_thing(name, creds)
       Logger.log(r)
     }
+}
+
+
+function batch_check_suspend() {
+  var suspend_users = []
+  
+  for(var i in credential_voters) {
+    var username = credential_voters[i].username
+    var o = get_user_about_o(username)  
+    var suspend = o.data.is_suspended
+    if(suspend) {
+      suspend_users.push(username)  
+    }
+  }
+  
+  if(suspend_users.length > 0) {
+    throw "suspend_users: " + suspend_users.join(", ")
+  }
+}
+
+
+// clean message from voter
+function batch_clean_messages() {
+  
+  var username = "time-machine-bot"
+  
 }

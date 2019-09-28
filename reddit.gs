@@ -12,7 +12,10 @@ var api = {
   comment: "https://oauth.reddit.com/api/comment.json",
   submit: "https://oauth.reddit.com/api/submit.json",
   inbox: "https://oauth.reddit.com/message/inbox.json",
+  read_msg: "https://oauth.reddit.com/api/read_message.json",
+  message_unread: "https://oauth.reddit.com/message/unread.json",
   user_about_f: function(username){return "https://www.reddit.com/user/"+username+"/about.json"},
+  user_about_f_o: function(username){return "https://oauth.reddit.com/user/"+username+"/about.json"},
   user_overview_f: function(username){return "https://www.reddit.com/user/"+username+"/overview.json"},
   user_submitted_f: function(username){return "https://www.reddit.com/user/"+username+"/submitted.json"},
   user_submitted_f_o: function(username, subreddit){return "https://www.reddit.com/user/"+username+"/submitted.json"},
@@ -30,6 +33,8 @@ var api = {
   comments_link_oauth_f: function(link){return "https://oauth.reddit.com"+link+".json"},
   comments_user_f: function(user){return "https://oauth.reddit.com/user/"+user+"/comments/.json?limit=100"}
 }
+
+
 
 //
 function get_wikis(mapping) {
@@ -337,19 +342,17 @@ function get_saved(username) {
 }
 
 //
-function get_objects(reads, ifcheck) {
+function get_objects(reads, ifcheck, ifsub, ifnsub) {
   var objs = []    
-  
+
   for(var i=0; i<reads.length; i++) {
     var data = reads[i].data
     var kind_read = reads[i].kind
-    
     var kind = get_kind(data.name)
     
     if(kind == "t1") {
       var parent_name = data.parent_id // name
       var parent = get_parent(parent_name)
-      httplib.printc("%s", JSON.stringify(parent))
       var flair = parent.link_flair_text
       var title = get_escaped_title(data.link_title + "(回覆)")
       var age = get_age(parent.created_utc)
@@ -359,15 +362,23 @@ function get_objects(reads, ifcheck) {
       var title = get_escaped_title(data.title)
     }
     
-    httplib.printc("3 %s", JSON.stringify(data))
-    
     var id = data.id    
     var name = data.name
     var subreddit = data.subreddit
     var permalink = data.permalink
     
-    if(subreddit != SUBREDDIT) {
+    if(ifsub == undefined) {
+      ifsub = SUBREDDIT  
+    }
+    
+    if(subreddit != ifsub) {
       continue  
+    }
+
+    if(ifnsub != undefined) {
+      if(subreddit == ifnsub) {
+        continue  
+      }
     }
     
     if(ifcheck) {
@@ -557,7 +568,7 @@ function get_user_creds(username) {
     return credential
   }
   
-  return undefined
+  throw "no creds found: " + username
 }
 
 
@@ -676,6 +687,14 @@ function get_user_about(username) {
 }
 
 
+function get_user_about_o(username) {
+  var api_path = api.user_about_f_o(username)
+  var reads = rddt_http(api_path, undefined, undefined, username)    
+  
+  return reads
+}
+
+
 function get_user_submitted(username) {
   var api_path = api.user_submitted_f(username)
   var reads = rddt_http(api_path)    
@@ -731,6 +750,46 @@ function get_inbox(creds) {
  return children
 }
 
+//
+function get_message_unread(username, sreddit) {
+ var api_path = api.message_unread
+ var reads = rddt_http(api_path, undefined, undefined, username)  
+ var children = reads.data.children
+ var names = []
+ 
+ for(var i in children) {
+   var data = children[i].data
+   var name = data.name
+   var subreddit = data.subreddit
+   if((sreddit == subreddit) || (sreddit == undefined)) { 
+     names.push(name)
+   }
+ }
+  
+ return names
+}
+
+
+function read_msg(username, name) {
+  var api_path = api.read_msg
+
+  var payload = {
+    "id":name
+  }
+  
+  var reads = rddt_http(api_path, payload, undefined, username)
+  
+  return reads
+}
+
+
+function read_messages(username, sreddit) {
+  var names = get_message_unread(username, sreddit)
+  
+  for(var i in names) {
+    read_msg(username, names[i])
+  }
+}
 
 function del_msg(name, creds) {
   var api_path = api.del_msg
